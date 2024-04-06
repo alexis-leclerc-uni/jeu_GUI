@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="sprites/menu/">
+        <file>*</file>
+    </qresource>
+</RCC>
