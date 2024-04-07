@@ -78,8 +78,6 @@ MenuWindow::~MenuWindow() {
 void MenuWindow::startGame(QString gameMode) {
 	QWidget* gameWindow = new GameWindow(this, gameMode);
 	this->close();
-
-
 }
 
 void MenuWindow::keyPressEvent(QKeyEvent* event) {

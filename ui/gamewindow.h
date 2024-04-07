@@ -27,6 +27,7 @@ public:
 	virtual ~GameWindow();
 
 protected:
+	void debugMessage(int row, int col);
 	void keyPressEvent(QKeyEvent* event) override;
 
 
