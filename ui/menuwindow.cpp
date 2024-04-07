@@ -63,6 +63,10 @@ MenuWindow::MenuWindow(QWidget* parent)
 	layout->addWidget(btnRafale, 4, 0, 4, 3);
 	layout->addWidget(btnStrategique, 8, 0, 8, 3);
 
+	connect(btnNormal, &QPushButton::clicked, this, [this]() {startGame("Normal"); });
+	connect(btnRafale, &QPushButton::clicked, this, [this]() {startGame("Rafale"); });
+	connect(btnStrategique, &QPushButton::clicked, this, [this]() {startGame("Strategique"); });
+
 	mainLayout->addWidget(gridWidget);
 
 	this->show();
@@ -71,7 +75,12 @@ MenuWindow::MenuWindow(QWidget* parent)
 MenuWindow::~MenuWindow() {
 }
 
+void MenuWindow::startGame(QString gameMode) {
+	QWidget* gameWindow = new GameWindow(this, gameMode);
+	this->close();
 
+
+}
 
 void MenuWindow::keyPressEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key_Escape) {

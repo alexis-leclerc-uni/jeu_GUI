@@ -17,6 +17,8 @@
 #include <QInputDialog>
 #include <QGridLayout>
 
+#include "ui/gamewindow.h"
+
 
 class MenuWindow : public QWidget
 {
@@ -25,6 +27,9 @@ class MenuWindow : public QWidget
 public:
 	MenuWindow(QWidget* parent = nullptr);
 	virtual ~MenuWindow();
+
+private slots:
+	void startGame(QString gameMode);
 
 protected:
 	void keyPressEvent(QKeyEvent* event) override;

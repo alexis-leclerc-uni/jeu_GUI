@@ -1,4 +1,4 @@
-#include "menuwindow.h"
+#include "ui/menuwindow.h"
 #include <QApplication>
 
 int main(int argc, char* argv[])
