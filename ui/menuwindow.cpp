@@ -67,6 +67,9 @@ MenuWindow::MenuWindow(QWidget* parent)
 	connect(btnRafale, &QPushButton::clicked, this, [this]() {startGame("Rafale"); });
 	connect(btnStrategique, &QPushButton::clicked, this, [this]() {startGame("Strategique"); });
 
+	//ohhhh oui
+	// latulippe y'est quand meme beau
+
 	mainLayout->addWidget(gridWidget);
 
 	this->show();
@@ -76,7 +79,16 @@ MenuWindow::~MenuWindow() {
 }
 
 void MenuWindow::startGame(QString gameMode) {
-	QWidget* gameWindow = new GameWindow(this, gameMode);
+	bool ok;
+	int numRows = QInputDialog::getInt(this, tr("Nombre de lignes"), tr("Entrez le nombre de lignes:"), 4, 1, 10, 1, &ok);
+	if (!ok)
+		return; 
+
+	int numColumns = QInputDialog::getInt(this, tr("Nombre de colonnes"), tr("Entrez le nombre de colonnes:"), 3, 1, 10, 1, &ok);
+	if (!ok)
+		return; 
+
+	QWidget* gameWindow = new GameWindow(this, gameMode, numRows, numColumns);
 	this->close();
 }
 

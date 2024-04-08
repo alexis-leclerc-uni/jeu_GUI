@@ -23,11 +23,16 @@ class GameWindow : public QWidget
 	Q_OBJECT
 
 public:
-	GameWindow(QWidget* parent = nullptr, QString gameMode = "");
+	GameWindow(QWidget* parent = nullptr, QString gameMode = "", int row = 5, int col = 5);
 	virtual ~GameWindow();
 
+private:
+	int buttonSize = 200;
+	int boardRows = 5;
+	int boardCols = 5;
+
 protected:
-	void debugMessage(int row, int col);
+	void debugMessage(int row, int col, QWidget* gridWidget);
 	void keyPressEvent(QKeyEvent* event) override;
 
 

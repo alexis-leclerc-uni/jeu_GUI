@@ -1,46 +1,69 @@
 ﻿#include "gamewindow.h"
 
-GameWindow::GameWindow(QWidget* parent, QString gameMode)
+GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boardCols)
 {
-	this->setWindowTitle("Jeu en mode " + gameMode);
+    this->setWindowTitle("Jeu en mode " + gameMode);
 
-	QVBoxLayout* mainLayout = new QVBoxLayout(this);
-	mainLayout->setContentsMargins(0, 0, 0, 0);
-	QWidget* gridWidget = new QWidget(this);
+    int spacing = 0; // Adjust as needed
 
-	QGridLayout* layout = new QGridLayout(gridWidget);
-	layout->setSpacing(0);
-	layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    // Create a container widget
+    QWidget* gridWidget = new QWidget(this);
+    gridWidget->setObjectName("gridWidget");
+    gridWidget->setStyleSheet("QWidget#gridWidget { background-color: white; }");
 
-	int buttonSize = 200;
+    // Calculate the total width and height needed for the buttons and spacing
+    int totalWidth = boardCols * (buttonSize + spacing) - spacing;
+    int totalHeight = boardRows * (buttonSize + spacing) - spacing;
 
-	// Create a grid of QPushButton items
-	for (int row = 0; row < 5; ++row) {
-		for (int col = 0; col < 5; ++col) {
-			QPushButton* button = new QPushButton(QString("%1,%2").arg(row).arg(col), this);
-			button->setFixedSize(buttonSize, buttonSize);
-			button->setFixedSize(buttonSize, buttonSize);
-			button->setContentsMargins(0, 0, 0, 0); // Set margins of the button to zero
-			button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-			connect(button, &QPushButton::clicked, this, [row, col, this]() {
-				debugMessage(row, col);
-				// You can add your logic here to change the properties of the clicked button
-				});
-			layout->addWidget(button, row, col);
-		}
-	}
+    // Set the size of the container widget
+    gridWidget->setFixedSize(totalWidth, totalHeight);
 
-	mainLayout->addWidget(gridWidget);
+    // Create buttons and position them manually
+    for (int row = 0; row < boardRows; ++row) {
+        for (int col = 0; col < boardCols; ++col) {
+            QPushButton* button = new QPushButton(gridWidget);
+            button->setFixedSize(buttonSize, buttonSize);
+            button->setObjectName(QString("btn_%1_%2").arg(row).arg(col));
+            button->setGeometry(col * (this->buttonSize + spacing), row * (this->buttonSize + spacing), this->buttonSize, this->buttonSize);
+            button->setStyleSheet("border-image: url(sprites/water/tile.png); color: blue; border: none;");
+            connect(button, &QPushButton::clicked, this, [row, col, this, gridWidget]() {
+                debugMessage(row, col, gridWidget);
+                });
+        }
+    }
 
-	this->show();
+    this->show();
 }
 
 GameWindow::~GameWindow() {
 }
 
-void GameWindow::debugMessage(int row, int col) {
-	QMessageBox::information(this, "Message", "Button clicked on row " + QString::number(row) + " and col "  + QString::number(col));
+void GameWindow::debugMessage(int row, int col, QWidget* gridWidget) {
+    int pixX = this->buttonSize * row + (this->buttonSize / 2);
+    int pixY = this->buttonSize * col + (this->buttonSize / 2);
 
+    int buttonX = 0;
+    int buttonY = 0;
+
+
+    QPushButton* clickedButton = findChild<QPushButton*>(QString("btn_%1_%2").arg(row).arg(col));
+    if (!clickedButton) {
+        qDebug() << "pas bouton";
+        return;
+    }
+    QPushButton* crosshairButton = findChild<QPushButton*>(QString("crosshair").arg(row).arg(col));
+    if (crosshairButton) {
+        crosshairButton->deleteLater();
+    }
+
+    QPoint buttonPos = clickedButton->mapTo(gridWidget, QPoint(0, 0));
+
+    QPushButton* newButton = new QPushButton(gridWidget);
+    newButton->setFixedSize(buttonSize, buttonSize);
+    newButton->move(buttonPos);
+    newButton->setObjectName("crosshair");
+	newButton->setStyleSheet("border-image: url(sprites/Red_marker); border: none;");
+    newButton->show();
 }
 
 
