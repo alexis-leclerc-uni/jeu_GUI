@@ -56,10 +56,7 @@ void GameWindow::debugMessage(int row, int col) {
         qDebug() << "pas bouton";
         return;
     }
-    QPushButton* crosshairButton = findChild<QPushButton*>(QString("crosshair").arg(row).arg(col));
-    if (crosshairButton) {
-        crosshairButton->deleteLater();
-    }
+    resetCrosshair(false);
 
     QPoint buttonPos = clickedButton->mapTo(this->gridWidget, QPoint(0, 0));
 
@@ -101,15 +98,31 @@ void GameWindow::spawnBoat(int y, int x, bool orientation, int size) {
 			newButton->setFixedSize(buttonSize, buttonSize);
 			newButton->move(buttonPos);
 			newButton->setObjectName("boatpart");
-			newButton->setStyleSheet(QString("border-image: url(sprites/boats/Cuiser/Cruiser%1); border: none;").arg(i+1));
+			newButton->setStyleSheet(QString("border-image: url(sprites/boats/Cruiser/Cruiser_%1_rotated); border: none;").arg(i+1));
+
 			newButton->show();
 
 
         }
+
     }
+    resetCrosshair(true);
 
 }
 
+/// <summary>
+/// if bool is true, then itll also reset the coords
+/// </summary>
+void GameWindow::resetCrosshair(bool clear) {
+    QPushButton* crosshairButton = findChild<QPushButton*>(QString("crosshair"));
+    if (crosshairButton) {
+        crosshairButton->deleteLater();
+    }
+    if (clear) {
+		this->currentPos[0] = -1;
+		this->currentPos[1] = -1;
+    }
+}
 
 
 void GameWindow::keyPressEvent(QKeyEvent* event) {
