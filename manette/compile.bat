@@ -1,0 +1,1 @@
+g++ -std=c++11 -pthread main.cpp .\lib_jeu\*.cpp  .\manette\manette.cpp .\external_libs\serial\SerialPort.cpp -pipe
