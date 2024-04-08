@@ -1,4 +1,6 @@
 ﻿#include "menuwindow.h"
+#include <windows.h> 
+#include <iostream>
 
 MenuWindow::MenuWindow(QWidget* parent)
 {
@@ -71,7 +73,6 @@ MenuWindow::MenuWindow(QWidget* parent)
 	// latulippe y'est quand meme beau
 
 	mainLayout->addWidget(gridWidget);
-
 	this->show();
 }
 
@@ -80,16 +81,31 @@ MenuWindow::~MenuWindow() {
 
 void MenuWindow::startGame(QString gameMode) {
 	bool ok;
-	int numRows = QInputDialog::getInt(this, tr("Nombre de lignes"), tr("Entrez le nombre de lignes:"), 4, 1, 10, 1, &ok);
+	int numRows = QInputDialog::getInt(this, tr("Nombre de lignes"), tr("Entrez le nombre de lignes:"), 10, 1, 40, 1, &ok);
 	if (!ok)
 		return; 
 
-	int numColumns = QInputDialog::getInt(this, tr("Nombre de colonnes"), tr("Entrez le nombre de colonnes:"), 3, 1, 10, 1, &ok);
+	int numColumns = QInputDialog::getInt(this, tr("Nombre de colonnes"), tr("Entrez le nombre de colonnes:"), 10, 1, 40, 1, &ok);
 	if (!ok)
-		return; 
+		return;
+	this->calculTaille(numRows, numColumns);
+	
 
-	QWidget* gameWindow = new GameWindow(this, gameMode, numRows, numColumns, 100);
+	QWidget* gameWindow = new GameWindow(this, gameMode, numRows, numColumns, taille);
 	this->close();
+}
+//Ajuster la taille de l'écran selon la résolution de l'écran
+int MenuWindow::calculTaille(int numRows, int numColumns) {
+	x = GetSystemMetrics(SM_CXSCREEN);
+	y = GetSystemMetrics(SM_CYSCREEN);
+
+	if (numRows >= numColumns) {
+		taille = x / (3.45 * numRows);
+	}
+	if (numRows < numColumns) {
+		taille = y / (1.1 * numColumns);
+	}
+	return taille;
 }
 
 void MenuWindow::keyPressEvent(QKeyEvent* event) {
@@ -97,9 +113,9 @@ void MenuWindow::keyPressEvent(QKeyEvent* event) {
 		// Exit the application if the Escape key is pressed
 		QCoreApplication::quit();
 	}
+
 	else {
 		// Call the base class implementation for other key events
 		QWidget::keyPressEvent(event);
 	}
 }
-

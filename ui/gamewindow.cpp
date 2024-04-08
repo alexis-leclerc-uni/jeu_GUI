@@ -33,7 +33,7 @@ GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boa
                 });
         }
     }
-
+    this->move(0, 0);
     this->show();
 }
 

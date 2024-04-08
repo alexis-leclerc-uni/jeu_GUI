@@ -30,10 +30,13 @@ public:
 
 private slots:
 	void startGame(QString gameMode);
-
+	int calculTaille(int numRows, int numColumns);
+	
 protected:
 	void keyPressEvent(QKeyEvent* event) override;
-
+	int x;
+	int y;
+	int taille;
 
 };
 
