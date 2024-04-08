@@ -1,7 +1,9 @@
 ﻿#include "gamewindow.h"
 
-GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boardCols)
+GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boardCols, int buttonSize)
 {
+    this->buttonSize = buttonSize;
+
     this->setWindowTitle("Jeu en mode " + gameMode);
 
     int spacing = 0; // Adjust as needed

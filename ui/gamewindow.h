@@ -23,7 +23,7 @@ class GameWindow : public QWidget
 	Q_OBJECT
 
 public:
-	GameWindow(QWidget* parent = nullptr, QString gameMode = "", int row = 5, int col = 5);
+	GameWindow(QWidget* parent = nullptr, QString gameMode = "", int row = 5, int col = 5, int buttonSize = 200);
 	virtual ~GameWindow();
 
 private:

@@ -88,7 +88,7 @@ void MenuWindow::startGame(QString gameMode) {
 	if (!ok)
 		return; 
 
-	QWidget* gameWindow = new GameWindow(this, gameMode, numRows, numColumns);
+	QWidget* gameWindow = new GameWindow(this, gameMode, numRows, numColumns, 100);
 	this->close();
 }
 
