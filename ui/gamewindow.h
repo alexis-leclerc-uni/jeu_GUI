@@ -31,9 +31,13 @@ private:
 	int boardRows = 5;
 	int boardCols = 5;
 
+	int currentPos[2] = {-1, -1};
+    QWidget* gridWidget;
+
 protected:
-	void debugMessage(int row, int col, QWidget* gridWidget);
+	void debugMessage(int row, int col);
 	void keyPressEvent(QKeyEvent* event) override;
+	void changeCoords(int x, int y);
 
 
 };

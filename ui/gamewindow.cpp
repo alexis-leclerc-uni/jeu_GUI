@@ -10,6 +10,7 @@ GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boa
 
     // Create a container widget
     QWidget* gridWidget = new QWidget(this);
+    this->gridWidget = gridWidget;
     gridWidget->setObjectName("gridWidget");
     gridWidget->setStyleSheet("QWidget#gridWidget { background-color: white; }");
 
@@ -29,24 +30,26 @@ GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boa
             button->setGeometry(col * (this->buttonSize + spacing), row * (this->buttonSize + spacing), this->buttonSize, this->buttonSize);
             button->setStyleSheet("border-image: url(sprites/water/tile.png); color: blue; border: none;");
             connect(button, &QPushButton::clicked, this, [row, col, this, gridWidget]() {
-                debugMessage(row, col, gridWidget);
+                debugMessage(row, col);
                 });
         }
     }
 
     this->show();
+    this->setFocus();
+    this->boardCols = boardCols;
+    this->boardRows = boardRows;
 }
 
 GameWindow::~GameWindow() {
 }
 
-void GameWindow::debugMessage(int row, int col, QWidget* gridWidget) {
+void GameWindow::debugMessage(int row, int col) {
     int pixX = this->buttonSize * row + (this->buttonSize / 2);
     int pixY = this->buttonSize * col + (this->buttonSize / 2);
 
     int buttonX = 0;
     int buttonY = 0;
-
 
     QPushButton* clickedButton = findChild<QPushButton*>(QString("btn_%1_%2").arg(row).arg(col));
     if (!clickedButton) {
@@ -58,9 +61,9 @@ void GameWindow::debugMessage(int row, int col, QWidget* gridWidget) {
         crosshairButton->deleteLater();
     }
 
-    QPoint buttonPos = clickedButton->mapTo(gridWidget, QPoint(0, 0));
+    QPoint buttonPos = clickedButton->mapTo(this->gridWidget, QPoint(0, 0));
 
-    QPushButton* newButton = new QPushButton(gridWidget);
+    QPushButton* newButton = new QPushButton(this->gridWidget);
     newButton->setFixedSize(buttonSize, buttonSize);
     newButton->move(buttonPos);
     newButton->setObjectName("crosshair");
@@ -68,16 +71,46 @@ void GameWindow::debugMessage(int row, int col, QWidget* gridWidget) {
     newButton->show();
 }
 
+void GameWindow::changeCoords(int x, int y) {
+    if (this->currentPos[0] == -1) {
+        this->currentPos[0] = 0;
+        this->currentPos[1] = 0;
+    }
+    // conditions pour pas se rendre dans le vide
+    else if((this->currentPos[0] + x >= 0) 
+		 && (this->currentPos[1] + y >= 0)
+		 && (this->currentPos[0] + x < boardCols) 
+		 && (this->currentPos[1] + y < boardRows)) {
+        this->currentPos[0] += x;
+        this->currentPos[1] += y;
+    }
+    debugMessage(this->currentPos[1], this->currentPos[0]);
+}
+
 
 
 void GameWindow::keyPressEvent(QKeyEvent* event) {
-	if (event->key() == Qt::Key_Escape) {
-		// Exit the application if the Escape key is pressed
-		QCoreApplication::quit();
-	}
-	else {
-		// Call the base class implementation for other key events
-		QWidget::keyPressEvent(event);
-	}
+    switch (event->key()) {
+    case Qt::Key_Escape:
+        // Exit the application if the Escape key is pressed
+        QCoreApplication::quit();
+        break;
+    case Qt::Key_Down:
+        changeCoords(0, 1);
+        break;
+    case Qt::Key_Up:
+        changeCoords(0, -1);
+        break;
+    case Qt::Key_Left:
+        changeCoords(-1, 0);
+        break;
+    case Qt::Key_Right:
+        changeCoords(1, 0);
+        break;
+    default:
+        // Call the base class implementation for other key events
+        QWidget::keyPressEvent(event);
+        break;
+    }
 }
 
