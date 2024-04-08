@@ -38,6 +38,7 @@ protected:
 	void debugMessage(int row, int col);
 	void keyPressEvent(QKeyEvent* event) override;
 	void changeCoords(int x, int y);
+	void spawnBoat(int x, int y, bool orientation, int size);
 
 
 };

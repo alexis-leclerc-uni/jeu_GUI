@@ -87,6 +87,29 @@ void GameWindow::changeCoords(int x, int y) {
     debugMessage(this->currentPos[1], this->currentPos[0]);
 }
 
+void GameWindow::spawnBoat(int y, int x, bool orientation, int size) {
+    qDebug() << "spawnin boat";
+    if (size == 3) {
+        for (int i = 0; i < 3; i++)
+        {
+		QPushButton* clickedButton = findChild<QPushButton*>(QString("btn_%1_%2").arg(y).arg(x));
+			QPoint buttonPos = clickedButton->mapTo(this->gridWidget, QPoint(0, 0));
+			QPushButton* newButton = new QPushButton(this->gridWidget);
+            int newX = buttonPos.x() + i*buttonSize;
+            buttonPos.setX(newX);
+
+			newButton->setFixedSize(buttonSize, buttonSize);
+			newButton->move(buttonPos);
+			newButton->setObjectName("boatpart");
+			newButton->setStyleSheet(QString("border-image: url(sprites/boats/Cuiser/Cruiser%1); border: none;").arg(i+1));
+			newButton->show();
+
+
+        }
+    }
+
+}
+
 
 
 void GameWindow::keyPressEvent(QKeyEvent* event) {
@@ -107,6 +130,8 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
     case Qt::Key_Right:
         changeCoords(1, 0);
         break;
+    case Qt::Key_3:
+        spawnBoat(this->currentPos[1], this->currentPos[0], 0, 3);
     default:
         // Call the base class implementation for other key events
         QWidget::keyPressEvent(event);
