@@ -15,7 +15,7 @@ using lime62::concurrent_queue;
 
 int lejeu(concurrent_queue<std::string>* queueManette, concurrent_queue<std::string>* queueAppli);
 int manetteFn(concurrent_queue<std::string>* q);
-int Appli(concurrent_queue<std::string>* q);
+int Appli(concurrent_queue<std::string>* q, int argc, char* argv[]);
 
 int main(int argc, char* argv[])
 {
@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 
     std::thread t1(lejeu, &qManetteJeu, &qAppliJeu);
     std::thread t2(manetteFn, &qManetteJeu);
-    Appli(&qAppliJeu);
+    Appli(&qAppliJeu, argc, argv);
 
     t1.join();
     t2.join();
@@ -36,11 +36,12 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-int Appli(concurrent_queue<std::string>* q) {
+int Appli(concurrent_queue<std::string>* q, int argc, char* argv[]) {
+    QApplication a(argc, argv);
 
-    
+    MenuWindow w;
 
-    return 0;
+    return a.exec();
 }
 
 

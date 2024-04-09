@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 *vcxproj*
 .qmake.stash
+*.sln

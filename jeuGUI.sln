@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.34407.143
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jeuGUI", "jeuGUI.vcxproj", "{1A2FEA85-21E4-32F3-91DA-267BCE926306}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jeuGUI", "jeuGUI.vcxproj", "{0B6C9725-A058-3B27-9494-AFD808E21EE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1A2FEA85-21E4-32F3-91DA-267BCE926306}.Debug|x64.ActiveCfg = Debug|x64
-		{1A2FEA85-21E4-32F3-91DA-267BCE926306}.Debug|x64.Build.0 = Debug|x64
-		{1A2FEA85-21E4-32F3-91DA-267BCE926306}.Release|x64.ActiveCfg = Release|x64
-		{1A2FEA85-21E4-32F3-91DA-267BCE926306}.Release|x64.Build.0 = Release|x64
+		{0B6C9725-A058-3B27-9494-AFD808E21EE3}.Debug|x64.ActiveCfg = Debug|x64
+		{0B6C9725-A058-3B27-9494-AFD808E21EE3}.Debug|x64.Build.0 = Debug|x64
+		{0B6C9725-A058-3B27-9494-AFD808E21EE3}.Release|x64.ActiveCfg = Release|x64
+		{0B6C9725-A058-3B27-9494-AFD808E21EE3}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4004FE7C-CF34-4E78-AA42-A0B566B76574}
+		SolutionGuid = {94391883-06CD-471A-8301-39DED5758E90}
 	EndGlobalSection
 EndGlobal
