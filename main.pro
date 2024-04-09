@@ -12,6 +12,7 @@ SOURCES +=	ui/menuwindow.cpp \
 			lib_jeu/jeu.cpp \
 			lib_jeu/Joueur.cpp \
 			external_libs/serial/SerialPort.cpp \
+			lib_jeu/jeu_App.cpp
 
 HEADERS +=	ui/menuwindow.h \
 			ui/gamewindow.h \
@@ -23,4 +24,5 @@ HEADERS +=	ui/menuwindow.h \
 			lib_jeu/Coordonnee.h \
 			external_libs/nlohmann/json.hpp \
 			external_libs/serial/SerialPort.hpp \
-			external_libs/concurrent_queue.hpp
+			external_libs/concurrent_queue.hpp \
+			lib_jeu/jeu_App.h
