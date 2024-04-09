@@ -2,6 +2,20 @@
 
 GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boardCols, int buttonSize)
 {
+
+/*
+    explication gab:
+
+        4 cases
+			Nuage quand on sait pas
+            Eau : quand y'a rien
+            Bateau : quand on sait qui en a un    (a cause sonde fucked up)
+            Bateau detruit : quand C'est detruit
+
+
+
+*/
+
     this->buttonSize = buttonSize;
 
     this->setWindowTitle("Jeu en mode " + gameMode);
@@ -30,7 +44,7 @@ GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boa
             button->setGeometry(col * (this->buttonSize + spacing), row * (this->buttonSize + spacing), this->buttonSize, this->buttonSize);
             button->setStyleSheet("border-image: url(sprites/water/tile.png); color: blue; border: none;");
             connect(button, &QPushButton::clicked, this, [row, col, this, gridWidget]() {
-                debugMessage(row, col);
+                genCrosshair(row, col);
                 });
         }
     }
@@ -44,7 +58,7 @@ GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boa
 GameWindow::~GameWindow() {
 }
 
-void GameWindow::debugMessage(int row, int col) {
+void GameWindow::genCrosshair(int row, int col) {
     int pixX = this->buttonSize * row + (this->buttonSize / 2);
     int pixY = this->buttonSize * col + (this->buttonSize / 2);
 
@@ -64,7 +78,14 @@ void GameWindow::debugMessage(int row, int col) {
     newButton->setFixedSize(buttonSize, buttonSize);
     newButton->move(buttonPos);
     newButton->setObjectName("crosshair");
-	newButton->setStyleSheet("border-image: url(sprites/Red_marker); border: none;");
+    QString markerColor;
+    if (rotationMode) {
+        markerColor = "Blue";
+    }
+    else {
+        markerColor = "Red";
+    }
+	newButton->setStyleSheet(QString("border-image: url(sprites/%1_marker); border: none;").arg(markerColor));
     newButton->show();
 }
 
@@ -81,31 +102,80 @@ void GameWindow::changeCoords(int x, int y) {
         this->currentPos[0] += x;
         this->currentPos[1] += y;
     }
-    debugMessage(this->currentPos[1], this->currentPos[0]);
+    genCrosshair(this->currentPos[1], this->currentPos[0]);
 }
 
 void GameWindow::spawnBoat(int y, int x, bool orientation, int size) {
+    QString boatType;
     qDebug() << "spawnin boat";
-    if (size == 3) {
-        for (int i = 0; i < 3; i++)
+
+
+    switch (size)
+    {
+		case(2):
+			boatType = QString("Destroyer");
+			break;
+		case(3):
+			boatType = QString("Cruiser");
+			break;
+		case(4):
+			boatType = QString("Battleship");
+			break;
+		case(5):
+			boatType = QString("Carrier");
+			break;
+		default:
+			break;
+    }
+
+	QRegularExpression exp(QString(".*%1.*").arg(boatType));
+	QList<QPushButton*> buttonsFound = findChildren<QPushButton*>(exp);
+    if (!buttonsFound.isEmpty()) {
+        if (boatType == "Cruiser") {
+            boatType = "Submarine";
+			QRegularExpression exp(QString(".*%1.*").arg(boatType));
+			QList<QPushButton*> buttonsFound = findChildren<QPushButton*>(exp);
+            if (!buttonsFound.isEmpty()) {
+				QMessageBox::warning(this, "Attention", QString("Le %1 a déjà été placé").arg(boatType));
+				return;
+            }
+        }
+        else {
+            QMessageBox::warning(this, "Attention", QString("Le %1 a déjà été placé").arg(boatType));
+            return;
+        }
+    }
+
+
+	QPushButton* clickedButton = findChild<QPushButton*>(QString("btn_%1_%2").arg(y).arg(x));
+	if (!clickedButton) {
+		qDebug() << "bouton non trouvé";
+		return;
+	}
+	for (int i = 0; i < size; i++)
+	{
+        if (!gridWidget)
         {
-		QPushButton* clickedButton = findChild<QPushButton*>(QString("btn_%1_%2").arg(y).arg(x));
-			QPoint buttonPos = clickedButton->mapTo(this->gridWidget, QPoint(0, 0));
-			QPushButton* newButton = new QPushButton(this->gridWidget);
-            int newX = buttonPos.x() + i*buttonSize;
-            buttonPos.setX(newX);
-
-			newButton->setFixedSize(buttonSize, buttonSize);
-			newButton->move(buttonPos);
-			newButton->setObjectName("boatpart");
-			newButton->setStyleSheet(QString("border-image: url(sprites/boats/Cruiser/Cruiser_%1_rotated); border: none;").arg(i+1));
-
-			newButton->show();
-
+            qDebug() << "widget pas bin bon";
+            return;
+        }
+		QPoint buttonPos = clickedButton->mapTo(this->gridWidget, QPoint(0, 0));
+		QPushButton* newButton = new QPushButton(this->gridWidget);
+        if (rotationMode) {
 
         }
+		int newX = buttonPos.x() + i*buttonSize;
+		buttonPos.setX(newX);
 
-    }
+		newButton->setFixedSize(buttonSize, buttonSize);
+		newButton->move(buttonPos);
+		newButton->setObjectName(QString("%1_boat_%2_%3").arg(boatType).arg(newX).arg(y));
+		newButton->setStyleSheet(QString("border-image: url(sprites/boats/%1/%1_%2_rotated); border: none;").arg(boatType).arg(i + 1));
+
+		newButton->show();
+
+
+	}
     resetCrosshair(true);
 
 }
@@ -143,8 +213,23 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
     case Qt::Key_Right:
         changeCoords(1, 0);
         break;
+    case Qt::Key_2:
+        spawnBoat(this->currentPos[1], this->currentPos[0], 0, 2);
+        break;
     case Qt::Key_3:
         spawnBoat(this->currentPos[1], this->currentPos[0], 0, 3);
+		break;
+    case Qt::Key_4:
+        spawnBoat(this->currentPos[1], this->currentPos[0], 0, 4);
+		break;
+    case Qt::Key_5:
+        spawnBoat(this->currentPos[1], this->currentPos[0], 0, 5);
+		break;
+    case Qt::Key_Space:
+        rotationMode = !rotationMode;
+        //regens the crosshair to change its color
+        changeCoords(0, 0);
+        break;
     default:
         // Call the base class implementation for other key events
         QWidget::keyPressEvent(event);
