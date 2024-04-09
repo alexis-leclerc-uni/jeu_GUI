@@ -161,16 +161,27 @@ void GameWindow::spawnBoat(int y, int x, bool orientation, int size) {
         }
 		QPoint buttonPos = clickedButton->mapTo(this->gridWidget, QPoint(0, 0));
 		QPushButton* newButton = new QPushButton(this->gridWidget);
-        if (rotationMode) {
+
+        int newX;
+        int newY;
+        QString rotation;
+        if (orientation) {
+			int newX = buttonPos.x() + i*buttonSize;
+			buttonPos.setX(newX);
+            int newY = buttonPos.y();
+            rotation = "_rotated";
 
         }
-		int newX = buttonPos.x() + i*buttonSize;
-		buttonPos.setX(newX);
+        else {
+			int newY = buttonPos.y() + i*buttonSize;
+			buttonPos.setY(newY);
+            int newX = buttonPos.x();
+        }
 
 		newButton->setFixedSize(buttonSize, buttonSize);
 		newButton->move(buttonPos);
-		newButton->setObjectName(QString("%1_boat_%2_%3").arg(boatType).arg(newX).arg(y));
-		newButton->setStyleSheet(QString("border-image: url(sprites/boats/%1/%1_%2_rotated); border: none;").arg(boatType).arg(i + 1));
+		newButton->setObjectName(QString("%1_boat_%2_%3").arg(boatType).arg(newX).arg(newY));
+		newButton->setStyleSheet(QString("border-image: url(sprites/boats/%1/%1_%2%3); border: none;").arg(boatType).arg(i + 1).arg(rotation));
 
 		newButton->show();
 
@@ -194,8 +205,72 @@ void GameWindow::resetCrosshair(bool clear) {
     }
 }
 
+bool GameWindow::allBoatsPlaced() {
+	QRegularExpression exp(QString(".*_boat_.*"));
+	QList<QPushButton*> boatsFound = findChildren<QPushButton*>(exp);
+    return boatsFound.length() == 17;
+    
+}
+
+
+
+void GameWindow::changeGamemode(int mode) {
+    if (mode == 1) {
+		QRegularExpression exp(QString(".*btn_.*"));
+		QList<QPushButton*> backgroundFound = findChildren<QPushButton*>(exp);
+
+        for (int i = 0; i < backgroundFound.length(); i++)
+        {
+            backgroundFound[i]->setStyleSheet("border-image: url(sprites/water/cloud.png); color: blue; border: none;");
+
+        }
+        
+		QRegularExpression exp2(QString(".*_boat_.*"));
+		QList<QPushButton*> boatsFound = findChildren<QPushButton*>(exp2);
+
+        for (int i = 0; i < boatsFound.length(); i++)
+        {
+            boatsFound[i]->setVisible(false);
+
+        }
+    }
+}
 
 void GameWindow::keyPressEvent(QKeyEvent* event) {
+    if (mode == 0) {
+        switch (event->key()) {
+			case Qt::Key_2:
+				spawnBoat(this->currentPos[1], this->currentPos[0], rotationMode, 2);
+				break;
+			case Qt::Key_3:
+				spawnBoat(this->currentPos[1], this->currentPos[0], rotationMode, 3);
+				break;
+			case Qt::Key_4:
+				spawnBoat(this->currentPos[1], this->currentPos[0], rotationMode, 4);
+				break;
+			case Qt::Key_5:
+				spawnBoat(this->currentPos[1], this->currentPos[0], rotationMode, 5);
+				break;
+			case Qt::Key_Space:
+				rotationMode = !rotationMode;
+				//regens the crosshair to change its color
+				changeCoords(0, 0);
+				break;
+			case Qt::Key_Return:
+				if (allBoatsPlaced()) {
+					//chepo
+					QMessageBox::information(this, "Bateau", "Tout les bateaux ont été placés ");
+					changeGamemode(1);
+                    this->mode = 1;
+				}
+				else {
+					QMessageBox::information(this, "Bateau", "Veuillez placer tout les bateaux avant de commencer la partie.");
+
+				}
+				break;
+        }
+	}
+
     switch (event->key()) {
     case Qt::Key_Escape:
         // Exit the application if the Escape key is pressed
@@ -212,23 +287,6 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
         break;
     case Qt::Key_Right:
         changeCoords(1, 0);
-        break;
-    case Qt::Key_2:
-        spawnBoat(this->currentPos[1], this->currentPos[0], 0, 2);
-        break;
-    case Qt::Key_3:
-        spawnBoat(this->currentPos[1], this->currentPos[0], 0, 3);
-		break;
-    case Qt::Key_4:
-        spawnBoat(this->currentPos[1], this->currentPos[0], 0, 4);
-		break;
-    case Qt::Key_5:
-        spawnBoat(this->currentPos[1], this->currentPos[0], 0, 5);
-		break;
-    case Qt::Key_Space:
-        rotationMode = !rotationMode;
-        //regens the crosshair to change its color
-        changeCoords(0, 0);
         break;
     default:
         // Call the base class implementation for other key events

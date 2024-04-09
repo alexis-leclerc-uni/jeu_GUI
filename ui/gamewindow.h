@@ -30,6 +30,7 @@ private:
 	int buttonSize = 200;
 	int boardRows = 5;
 	int boardCols = 5;
+	int mode = 0;
 
 	int currentPos[2] = {-1, -1};
     QWidget* gridWidget;
@@ -41,6 +42,8 @@ protected:
 	void changeCoords(int x, int y);
 	void spawnBoat(int x, int y, bool orientation, int size);
 	void resetCrosshair(bool clear);
+	bool allBoatsPlaced();
+	void changeGamemode(int mode);
 
 
 };
