@@ -38,11 +38,7 @@ int main(int argc, char* argv[])
 
 int Appli(concurrent_queue<std::string>* q) {
 
-    while (true)
-    {
-        
-        Sleep(100);
-    }
+    
 
     return 0;
 }

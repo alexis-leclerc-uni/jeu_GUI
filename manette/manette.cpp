@@ -42,7 +42,7 @@ Manette::Manette(const std::string& port, concurrent_queue<std::string>* q){
         
         // Impression du message de l'Arduino si valide
         if(raw_msg.size()>0){
-            //std::cout << "raw_msg: " << raw_msg << std::endl;  // debug
+            std::cout << "raw_msg: " << raw_msg << std::endl;  // debug
             // Transfert du message en json
             //std::cout << raw_msg << std::endl;
             try
@@ -112,8 +112,6 @@ Manette::Manette(const std::string& port, concurrent_queue<std::string>* q){
             }
 
             old_received_msg = parsed_received_msg;
-
-            std::cout << old_received_msg << std::endl;
             
             /*
             for(int i = 0; i <= sizeof(parsed_received_msg); i++){
@@ -127,7 +125,7 @@ Manette::Manette(const std::string& port, concurrent_queue<std::string>* q){
         led_state = !led_state;
 
         // Bloquer le fil pour environ 1 sec
-        Sleep(40); // 1000ms
+        Sleep(80); // 1000ms
     }
 }
 
