@@ -105,6 +105,25 @@ bool Joueur::positionBateau(int x, int y, bool horizontal, int taille)
     return true;
 }
 
+bool Joueur::rngBateau() {
+    int tailleBateau[] = { 5,4,3,3,2 };
+    srand(time(NULL));
+    for (int i = 0; i < 5; i++) {
+        int X=-1;
+        int Y=-1;
+        int H=-1;
+        do {
+            X = rand() % carte->getTailleEnX();
+            Y = rand() % carte->getTailleEnY();
+            H = rand() % 2;
+        } while (!this->positionBateau(X, Y, H, tailleBateau[i]));
+        this->ajouterBateau(X, Y, H, tailleBateau[i]);
+
+    }
+    this->afficherCarteBateau(std::cout);
+    return true;
+}
+
 bool Joueur::ajouterBateau(int x, int y, bool horizontal, int taille)
 {
     //Vérifie que le bateau est dans la carte
