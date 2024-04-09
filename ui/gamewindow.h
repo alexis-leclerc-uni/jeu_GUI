@@ -44,6 +44,7 @@ protected:
 	void resetCrosshair(bool clear);
 	bool allBoatsPlaced();
 	void changeGamemode(int mode);
+	bool checkIfHit(int x, int y);
 
 
 };

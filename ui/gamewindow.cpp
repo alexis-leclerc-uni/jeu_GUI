@@ -12,6 +12,7 @@ GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boa
             Bateau : quand on sait qui en a un    (a cause sonde fucked up)
             Bateau detruit : quand C'est detruit
 
+    TODO:: regler les multiples problemes de coordonnees
 
 
 */
@@ -180,7 +181,7 @@ void GameWindow::spawnBoat(int y, int x, bool orientation, int size) {
 
 		newButton->setFixedSize(buttonSize, buttonSize);
 		newButton->move(buttonPos);
-		newButton->setObjectName(QString("%1_boat_%2_%3").arg(boatType).arg(newX).arg(newY));
+		newButton->setObjectName(QString("%1_boat_%2_%3").arg(boatType).arg(buttonPos.x()/100).arg(buttonPos.y()/100));
 		newButton->setStyleSheet(QString("border-image: url(sprites/boats/%1/%1_%2%3); border: none;").arg(boatType).arg(i + 1).arg(rotation));
 
 		newButton->show();
@@ -210,6 +211,13 @@ bool GameWindow::allBoatsPlaced() {
 	QList<QPushButton*> boatsFound = findChildren<QPushButton*>(exp);
     return boatsFound.length() == 17;
     
+}
+
+bool GameWindow::checkIfHit(int x, int y) {
+	QRegularExpression exp(QString(".*boat_%1_%2.*").arg(x).arg(y));
+	QList<QPushButton*> boatsFound = findChildren<QPushButton*>(exp);
+    return boatsFound.length() != 0;
+
 }
 
 
@@ -269,7 +277,21 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
 				}
 				break;
         }
-	}
+    }
+    else {
+        switch (event->key()) {
+        case Qt::Key_Return:
+            
+			if (checkIfHit(this->currentPos[0], this->currentPos[1])) {
+				//chepo
+				QMessageBox::information(this, "Bateau", "HIT!!!! ");
+			}
+			else {
+				QMessageBox::information(this, "Bateau", "pas de hit");
+
+			}
+        }
+    }
 
     switch (event->key()) {
     case Qt::Key_Escape:
