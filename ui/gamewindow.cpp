@@ -106,7 +106,7 @@ void GameWindow::changeCoords(int x, int y) {
     genCrosshair(this->currentPos[1], this->currentPos[0]);
 }
 
-void GameWindow::spawnBoat(int y, int x, bool orientation, int size) {
+void GameWindow::spawnBoat(int x, int y, bool orientation, int size) {
     QString boatType;
     qDebug() << "spawnin boat";
 
@@ -217,7 +217,6 @@ bool GameWindow::checkIfHit(int x, int y) {
 	QRegularExpression exp(QString(".*boat_%1_%2.*").arg(x).arg(y));
 	QList<QPushButton*> boatsFound = findChildren<QPushButton*>(exp);
     return boatsFound.length() != 0;
-
 }
 
 
@@ -248,16 +247,16 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
     if (mode == 0) {
         switch (event->key()) {
 			case Qt::Key_2:
-				spawnBoat(this->currentPos[1], this->currentPos[0], rotationMode, 2);
+				spawnBoat(this->currentPos[0], this->currentPos[1], rotationMode, 2);
 				break;
 			case Qt::Key_3:
-				spawnBoat(this->currentPos[1], this->currentPos[0], rotationMode, 3);
+				spawnBoat(this->currentPos[0], this->currentPos[1], rotationMode, 3);
 				break;
 			case Qt::Key_4:
-				spawnBoat(this->currentPos[1], this->currentPos[0], rotationMode, 4);
+				spawnBoat(this->currentPos[0], this->currentPos[1], rotationMode, 4);
 				break;
 			case Qt::Key_5:
-				spawnBoat(this->currentPos[1], this->currentPos[0], rotationMode, 5);
+				spawnBoat(this->currentPos[0], this->currentPos[1], rotationMode, 5);
 				break;
 			case Qt::Key_Space:
 				rotationMode = !rotationMode;
@@ -281,14 +280,12 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
     else {
         switch (event->key()) {
         case Qt::Key_Return:
-            
 			if (checkIfHit(this->currentPos[0], this->currentPos[1])) {
 				//chepo
 				QMessageBox::information(this, "Bateau", "HIT!!!! ");
 			}
 			else {
 				QMessageBox::information(this, "Bateau", "pas de hit");
-
 			}
         }
     }
