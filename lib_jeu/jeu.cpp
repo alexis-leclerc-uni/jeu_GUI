@@ -276,54 +276,75 @@ int Jeu::menuInitJoueur(std::ostream& sout, std::istream& sin,Joueur* joueur)
     int x = 0; int y = 0;
     bool horizontal = true;
     std::string result;
-    for (int i = 0; i < 5; i++)
-    {
-        do {
+    bool etat=false;
+    sout << "Mode de placement:" << std::endl << "1 : Manuel" << std::endl << "2 : Aleatoire" << std::endl;
+    
+    do{
+        while(this->qManetteJeu->empty()){ //Attente du joueur
+            Sleep(50);
+        };
+        result = this->qManetteJeu->front();
+        this->qManetteJeu->pop();
+
+        if(result=="bouton3"){
+            for(int i=0;i<5;i++ ){
+            do{
             //Joystick contrôle la position
-            //Le bouton bas contrôle la direction
-            sautDePage(sout);
-            afficherInitTaille(sout, joueur, tailleBateau[i]);
-            joueur->afficherCartePreparation(sout, {x, y}, horizontal, tailleBateau[i]);
+                //Le bouton bas contrôle la direction
+                
+                sautDePage(sout);
+                afficherInitTaille(sout, joueur, tailleBateau[i]);
+                joueur->afficherCartePreparation(sout, { x, y }, horizontal, tailleBateau[i]);
+
+                while (this->qManetteJeu->empty()) { //Attente du joueur
+                    Sleep(50);
+                };
+                result = this->qManetteJeu->front();
+                this->qManetteJeu->pop();
+                if (result == "bouton3") {
+                    horizontal = !horizontal;
+                }
+                else if (result == "N") {
+                    y++;
+                }
+                else if (result == "NE") {
+                    y++; x++;
+                }
+                else if (result == "E") {
+                    x++;
+                }
+                else if (result == "SE") {
+                    y--; x++;
+                }
+                else if (result == "S") {
+                    y--;
+                }
+                else if (result == "SO") {
+                    x--; y--;
+                }
+                else if (result == "O") {
+                    x--;
+                }
+                else if (result == "NO") {
+                    x--; y++;
+                }
+                else if (result.substr(0, 3) == "pot") {
+                    valPot = std::stoi(result.substr(3, 3));
+                }
+            } while (!(joueur->positionBateau(x, y, horizontal, tailleBateau[i]) && result == "bouton1"));
+            joueur->ajouterBateau(x, y, horizontal, tailleBateau[i]);
+            continue;
             
-            while(this->qManetteJeu->empty()){ //Attente du joueur
-                Sleep(50);
-            };
-            result = this->qManetteJeu->front();
-            this->qManetteJeu->pop();
-            if (result == "bouton3"){
-                horizontal = !horizontal;
+            etat=true;
             }
-            else if (result == "N"){
-                y++;
-            }
-            else if (result == "NE"){
-                y++; x++;
-            }
-            else if (result == "E"){
-                x++;
-            }
-            else if (result == "SE"){
-                y--; x++;
-            }
-            else if (result == "S"){
-                y--;
-            }
-            else if (result == "SO"){
-                x--; y--;
-            }
-            else if (result == "O"){
-                x--;
-            }
-            else if (result == "NO"){
-                x--; y++;
-            }
-            else if (result.substr(0,3) == "pot"){
-                valPot = std::stoi(result.substr(3,3));
-            }
-        } while (!(joueur->positionBateau(x,y,horizontal,tailleBateau[i]) && result == "bouton1"));
-        joueur->ajouterBateau(x,y,horizontal, tailleBateau[i]);
+        }
+        if(result=="bouton4"){
+
+            joueur->rngBateau();
+            etat=true;
+        }
         continue;
-    }
+    } while(etat=false);
     return CONFIRMER;
 }
 //Description : le jeu en mode normal

@@ -20,6 +20,7 @@ class Joueur {
         int tirer(Coordonnee position, Joueur* adversaire);
         int sonder(Coordonnee position, Joueur* adversaire);
         bool positionBateau(int x, int y, bool horizontal, int taille);
+        bool rngBateau();
         bool ajouterBateau(int x, int y, bool horizontal, int taille);
         int getChargement();
         void setChargement(int charge);
