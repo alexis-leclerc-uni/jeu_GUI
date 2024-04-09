@@ -7,13 +7,16 @@ Jeu::Jeu()
 {
     tailleEnX = 5;
     tailleEnY = 5;
+    ventX = 0;
+    ventY = 0;
 }
 //Description : Construit le jeu avec queue
 //Entrée : rien
 //Sortie : rien
-Jeu::Jeu(concurrent_queue<std::string>* queue)
+Jeu::Jeu(concurrent_queue<std::string>* queueManette, concurrent_queue<std::string>* queueAppli)
 {
-    this->q = queue;
+    this->qManetteJeu = queueManette;
+    this->qAppliJeu = queueAppli;
 }
 //Description : Déconstruit le jeu (déallouer la mémoire des Joueur)
 //Entrée : rien
@@ -39,11 +42,11 @@ bool Jeu::afficherStartUp(std::ostream& sout)
 int Jeu::menuStartUp(std::ostream& sout, std::istream& sin)
 {
     std::string result = "";
-    while(this->q->empty()){
+    while(this->qManetteJeu->empty()){
         Sleep(100);
     };
-    result = this->q->front();
-    this->q->pop();
+    result = this->qManetteJeu->front();
+    this->qManetteJeu->pop();
     std::cout << result << std::endl;
     if (result == "bouton2") {
         exit(0);
@@ -111,11 +114,11 @@ int Jeu::menuReglage(std::ostream& sout, std::istream& sin)
     std::string result = "";
     mode = -1;
     do {
-        while(this->q->empty()){
+        while(this->qManetteJeu->empty()){
             Sleep(50);
         };
-        result = this->q->front();
-        this->q->pop();
+        result = this->qManetteJeu->front();
+        this->qManetteJeu->pop();
         if (result == "bouton2") {
             mode = MODE_NORMAL;}
         else if (result == "bouton4") {
@@ -135,11 +138,11 @@ int Jeu::menuReglage(std::ostream& sout, std::istream& sin)
             Bouton de haut = confirmer
         */
         
-        while(this->q->empty()){ //Attente du joueur
+        while(this->qManetteJeu->empty()){ //Attente du joueur
             Sleep(50);
         };
-        result = this->q->front();
-        this->q->pop();
+        result = this->qManetteJeu->front();
+        this->qManetteJeu->pop();
         if (result == "bouton2"){
             if (tailleEnX > MIN_X){
                 --tailleEnX;
@@ -192,11 +195,11 @@ int Jeu::menuReglage(std::ostream& sout, std::istream& sin)
             Bouton de haut = confirmer
         */
         
-        while(this->q->empty()){ //Attente du joueur
+        while(this->qManetteJeu->empty()){ //Attente du joueur
             Sleep(50);
         };
-        result = this->q->front();
-        this->q->pop();
+        result = this->qManetteJeu->front();
+        this->qManetteJeu->pop();
         if (result == "bouton2"){
             if (tailleEnY > MIN_Y){
                 --tailleEnY;
@@ -282,11 +285,11 @@ int Jeu::menuInitJoueur(std::ostream& sout, std::istream& sin,Joueur* joueur)
             afficherInitTaille(sout, joueur, tailleBateau[i]);
             joueur->afficherCartePreparation(sout, {x, y}, horizontal, tailleBateau[i]);
             
-            while(this->q->empty()){ //Attente du joueur
+            while(this->qManetteJeu->empty()){ //Attente du joueur
                 Sleep(50);
             };
-            result = this->q->front();
-            this->q->pop();
+            result = this->qManetteJeu->front();
+            this->qManetteJeu->pop();
             if (result == "bouton3"){
                 horizontal = !horizontal;
             }
@@ -517,11 +520,11 @@ int Jeu::menuTir(std::ostream& sout, std::istream& sin,Joueur* joueur, Joueur* a
         int type = -1;
         afficherTir1(sout, joueur, adversaire);
         do {
-            while(this->q->empty()){ //Attente du joueur
+            while(this->qManetteJeu->empty()){ //Attente du joueur
                 Sleep(50);
             };
-            result = this->q->front();
-            this->q->pop();
+            result = this->qManetteJeu->front();
+            this->qManetteJeu->pop();
             if (result.substr(0,3) == "pot"){
                 valPot = std::stoi(result.substr(3,3));
             }
@@ -542,11 +545,11 @@ int Jeu::menuTir(std::ostream& sout, std::istream& sin,Joueur* joueur, Joueur* a
 
             // Demande l'élévation
         do {
-            while(this->q->empty()){ //Attente du joueur
+            while(this->qManetteJeu->empty()){ //Attente du joueur
                 Sleep(50);
             };
-            result = this->q->front();
-            this->q->pop();
+            result = this->qManetteJeu->front();
+            this->qManetteJeu->pop();
             if (result.substr(0,3) == "pot"){
                 valPot = std::stoi(result.substr(3,3));
             }
@@ -555,48 +558,54 @@ int Jeu::menuTir(std::ostream& sout, std::istream& sin,Joueur* joueur, Joueur* a
 
         afficherTir3(sout, joueur, adversaire);
         do {
-            while(this->q->empty()){ //Attente du joueur
+            while(this->qManetteJeu->empty()){ //Attente du joueur
                 Sleep(50);
             };
-            result = this->q->front();
-            this->q->pop();
+            result = this->qManetteJeu->front();
+            this->qManetteJeu->pop();
             if (result.substr(0,3) == "pot"){
                 valPot = std::stoi(result.substr(3,3));
             }
         } while (result != "bouton1");
-        int angle = (520 - valPot)/5.11111; // rotation gauche droite
+        int angle = (980 - valPot)/2.4; // rotation gauche droite
 
         afficherTir4(sout, joueur, adversaire);
         do {
-            while(this->q->empty()){ //Attente du joueur
+            while(this->qManetteJeu->empty()){ //Attente du joueur
                 Sleep(50);
             };
-            result = this->q->front();
-            this->q->pop();
+            result = this->qManetteJeu->front();
+            this->qManetteJeu->pop();
             if (result.substr(0,3) == "pot"){
                 valPot = std::stoi(result.substr(3,3));
             }
         } while (result != "bouton1");
-        int vitesseTir = (990 - valPot)/(920/(tailleEnX * 1.5));// puissance du tir
 
-        int distance;
-        float vitX = vitesseTir * sinf((elevation * 2 * 3.1415) / 360);
-        float vitY = vitesseTir * cosf((elevation * 2 * 3.1415) / 360);
+        do { //Shake shake shakira!!!
+            while (this->qManetteJeu->empty()) { //Attente du joueur
+                Sleep(50);
+            };
+            result = this->qManetteJeu->front();
+            this->qManetteJeu->pop();
+            if (result.substr(0, 3) == "pot") {
+                valPot = std::stoi(result.substr(3, 3));
+            }
+        } while (result != "shake");
+
+        int vitesseTir = (990 - valPot)/(920/(sqrtf( tailleEnX*tailleEnX/4 + tailleEnY*tailleEnY/4)));// puissance du tir
+
+        float distance;
+        float vitY = vitesseTir * sinf((elevation * 3.1415) / 180);
+        float vitX = vitesseTir * cosf((elevation * 3.1415) / 180) * cosf((angle * 3.1415) / 180);
+        float vitZ = vitesseTir * cosf((elevation * 3.1415) / 180) * sinf((angle * 3.1415) / 180);
         //sout << vitX << vitY << std::endl;
-        float t1 = (vitY + sqrtf(vitY * vitY)) / 9.8;
-        float t2 = (vitY - sqrtf(vitY * vitY)) / 9.8;
+        float g = 9.8;
+        float u = 0.5;
+        float t = 2*vitY/ g;
         //sout << t1 << t2 << std::endl;
-        if (t1 == 0.0)
-        {
-            distance = vitX * t2;
-        }
-        if (t2 == 0.0)
-        {
-            distance = vitX * t1;
-        }
         //sout << distance << std::endl;
-        cord.x = -2 + distance * cosf(angle * 2 * 3.1415 / 360);
-        cord.y = 4 + distance * sinf(angle * 2 * 3.1415 / 360);
+        cord.x = tailleEnX/2 + vitX*t + 0.5 * u * ventX * t * t;
+        cord.y = tailleEnY/2 + vitZ*t + 0.5 * u * ventY * t * t;
         //sout << cord.x << cord.y << std::endl;
 
 
@@ -655,11 +664,11 @@ int Jeu::menuFin(std::ostream& sout, std::istream& sin)
 {
     
     std::string result;
-    while(this->q->empty()){ //Attente du joueur
+    while(this->qManetteJeu->empty()){ //Attente du joueur
         Sleep(50);
     };
-    result = this->q->front();
-    this->q->pop();
+    result = this->qManetteJeu->front();
+    this->qManetteJeu->pop();
     if (result == "bouton1"){
         return CONFIRMER;
     }

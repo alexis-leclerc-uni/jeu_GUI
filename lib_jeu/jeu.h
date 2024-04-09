@@ -25,7 +25,7 @@ using lime62::concurrent_queue;
 
 class Jeu {
     public:
-        Jeu(concurrent_queue<std::string>* q);
+        Jeu(concurrent_queue<std::string>* queueManette, concurrent_queue<std::string>* queueAppli);
         Jeu();
         ~Jeu();
         bool afficherStartUp(std::ostream& sout);
@@ -53,11 +53,14 @@ class Jeu {
         int getMode();
         void sautDePage(std::ostream& sout);
     private:
+        int ventX;
+        int ventY;
         int valPot;
         int tailleEnX;
         int tailleEnY;
         int mode;
-        concurrent_queue<std::string>* q;
+        concurrent_queue<std::string>* qManetteJeu;
+        concurrent_queue<std::string>* qAppliJeu;
         std::vector<Joueur*> vecJoueur;
 };
 

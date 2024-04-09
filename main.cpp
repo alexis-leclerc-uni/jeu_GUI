@@ -1,5 +1,6 @@
 #include "ui/menuwindow.h"
 #include <QApplication>
+#include <windows.h>
 
 // ConsoleApplication3.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
@@ -12,33 +13,40 @@
 
 using lime62::concurrent_queue;
 
-int lejeu(concurrent_queue<std::string>* q);
+int lejeu(concurrent_queue<std::string>* queueManette, concurrent_queue<std::string>* queueAppli);
 int manetteFn(concurrent_queue<std::string>* q);
-int Appli(concurrent_queue < std::string>* q, int argc, char* argv[]);
+int Appli(concurrent_queue<std::string>* q);
 
 int main(int argc, char* argv[])
 {
 
-    concurrent_queue<std::string> q;
-
+    concurrent_queue<std::string> qManetteJeu;
+    concurrent_queue<std::string> qAppliJeu;
+    
     //il y aurait dequoi à patenter si on veut que les deux puisse print du serial, je le fais pas car c'est pas le but final du jeu
     
-    std::thread t1(lejeu, &q);
-    std::thread t2(manetteFn, &q);
-    std::thread t3(Appli, &q, argc, argv);
+
+    std::thread t1(lejeu, &qManetteJeu, &qAppliJeu);
+    std::thread t2(manetteFn, &qManetteJeu);
+    Appli(&qAppliJeu);
+
     t1.join();
     t2.join();
-    t3.join();
 
     return 0;
 }
 
-int Appli(concurrent_queue<std::string>* q, int argc, char* argv[]) {
-    QApplication a(argc, argv);
-    MenuWindow w;
+int Appli(concurrent_queue<std::string>* q) {
 
-    return a.exec();
+    while (true)
+    {
+        
+        Sleep(100);
+    }
+
+    return 0;
 }
+
 
 int manetteFn(concurrent_queue<std::string>* q) {
     const std::string& port = "COM3";
@@ -47,10 +55,10 @@ int manetteFn(concurrent_queue<std::string>* q) {
 }
 
 
-int lejeu(concurrent_queue<std::string>* q)
+int lejeu(concurrent_queue<std::string>* queueManette, concurrent_queue<std::string>* queueAppli)
 {
     //std::cout<<sizeof(q);
-    Jeu jeu(q);
+    Jeu jeu(queueManette, queueAppli);
     int reponse;
     jeu.afficherStartUp(std::cout);
     while ((reponse = jeu.menuStartUp(std::cout, std::cin)) == INCORRECT) {}
@@ -84,4 +92,5 @@ int lejeu(concurrent_queue<std::string>* q)
     } while (true);
 
     exit(0);
+    return 0;
 }
