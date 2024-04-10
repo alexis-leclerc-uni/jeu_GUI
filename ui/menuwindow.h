@@ -27,6 +27,8 @@ class MenuWindow : public QWidget
 public:
 	MenuWindow(QWidget* parent = nullptr);
 	virtual ~MenuWindow();
+
+public slots:
 	QWidget* startGameJeu(QString gameMode, int numRows, int numColumns);
 
 private slots:

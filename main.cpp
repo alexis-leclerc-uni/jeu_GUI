@@ -1,6 +1,7 @@
 ﻿#include "ui/menuwindow.h"
 #include <QApplication>
 #include <windows.h>
+#include "ui/threadSignal.h"
 
 // ConsoleApplication3.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
@@ -15,10 +16,12 @@ using lime62::concurrent_queue;
 
 int lejeu(concurrent_queue<std::string>* queueManette, concurrent_queue<std::string>* queueAppli);
 int manetteFn(concurrent_queue<std::string>* q);
-int Appli(concurrent_queue<std::string>* q, int argc, char* argv[]);
 
 int main(int argc, char* argv[])
 {
+    QApplication a(argc, argv);
+
+    MenuWindow w;
 
     concurrent_queue<std::string> qManetteJeu;
     concurrent_queue<std::string> qAppliJeu;
@@ -28,54 +31,14 @@ int main(int argc, char* argv[])
 
     std::thread t1(lejeu, &qManetteJeu, &qAppliJeu);
     //std::thread t2(manetteFn, &qManetteJeu);
-    Appli(&qAppliJeu, argc, argv);
+    Controller Appli = Controller(&qAppliJeu);
+
+    a.exec();
 
     t1.join();
     //t2.join();
 
-    return 0;
-}
-
-int Appli(concurrent_queue<std::string>* q, int argc, char* argv[]) {
-    QApplication a(argc, argv);
-
-    MenuWindow w;
-    
-
-    //Implémentation de la manette
-    //Menu principal -> On demande le mode de jeux
-    std::string result;
-    std::string mode;
-    QWidget* gameWindow;
-    /*while (q->empty()) { //Attente du joueur pour le mode
-        Sleep(50);
-    };
-    result = q->front();
-    q->pop();
-    mode = result;*/
-
-    std::cout << "YOOOOOO";
-    
-    QDialog* dial = new QDialog(&w);
-    dial->resize(400, 300);
-    QLabel* text = new QLabel(dial);
-    text->setText("Choissisez le nombre de Colonne 10 ");
-
-    dial->show();
-    text->show();
-
-    do {
-        while (q->empty()) { //Attente du joueur
-            Sleep(50);
-        };
-        result = q->front();
-        q->pop();
-
-
-    } while (result != "confirm");
-
-
-    return a.exec();
+    return 0; 
 }
 
 
