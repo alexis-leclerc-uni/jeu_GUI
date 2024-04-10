@@ -45,6 +45,11 @@ protected:
 	bool allBoatsPlaced();
 	void changeGamemode(int mode);
 	bool checkIfHit(int x, int y);
+	void removeBoats();
+
+	void changeElevation(int elevation);
+	void changePuissance(int puissance);
+	void changeAngle(int angle);
 
 
 };
