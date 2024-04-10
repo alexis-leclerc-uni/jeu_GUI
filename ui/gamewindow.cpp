@@ -106,6 +106,45 @@ void GameWindow::changePuissance(int puissance) {
     lblPuissance->setText(QString("Puissance : %1").arg(puissance));
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="state">0 = eau, 1=cloud, 2 = bateau destruit</param>
+void GameWindow::changeContent(int x, int y, int state) {
+    QPushButton* button = findChild<QPushButton*>(QString("btn_%1_%2").arg(x).arg(y));
+
+    if (button) {
+		QString image = QString();
+		switch (state)
+		{
+		case 0:
+			image = "water/tile.png";
+			break;
+		case 1:
+			image = "water/cloud.png";
+			break;
+		default:
+			break;
+		}
+
+		if (state == 2) {
+            button->setStyleSheet("border-image: url();");
+            button->setText("bateau destrui");
+        }
+        else {
+            button->setStyleSheet(QString("border-image: url(sprites/%1);").arg(image));
+            button->setText("");
+
+        }
+
+    }
+
+    //QString background = border
+
+}
+
 void GameWindow::removeBoats() {
     QRegularExpression exp(".*boat_.*");
     QList<QPushButton*> boatsFound = findChildren<QPushButton*>(exp);
@@ -322,13 +361,13 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
 				changeCoords(0, 0);
 				break;
             case Qt::Key_7:
-                changeAngle(69);
+                changeContent(0, 0, 0);
                 break;
             case Qt::Key_8:
-                changePuissance(69);
+                changeContent(0, 0, 1);
                 break;
             case Qt::Key_9:
-                changeElevation(69);
+                changeContent(0, 0, 2);
 				break;
 			case Qt::Key_Return:
 				if (allBoatsPlaced()) {

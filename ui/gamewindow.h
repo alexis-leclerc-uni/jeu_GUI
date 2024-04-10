@@ -50,6 +50,7 @@ protected:
 	void changeElevation(int elevation);
 	void changePuissance(int puissance);
 	void changeAngle(int angle);
+	void changeContent(int x, int y, int state);
 
 
 };
