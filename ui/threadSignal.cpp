@@ -30,61 +30,7 @@ Controller::~Controller() {
 }
 
 void Controller::handleResultat(const std::string resultat) {
-    if (!mode) {
-        Mode = resultat;
-        mode = true;
-    }
-    else if (!tailleEnX) {
-        if (resultat == "confirm") 
-            tailleEnX = true;
-        else
-            numCols = std::stoi(resultat);
-    }
-    else if (!tailleEnY) {
-        if (resultat == "confirm") {
-            tailleEnY = true;
-
-        }
-        else
-            numRows = std::stoi(resultat);
-    }
-    else if (!Joueur1Bateau) {
-
-        Joueur1Bateau = true;
-    }
-    else if (!Joueur2Bateau) {
-
-        Joueur2Bateau = true;
-    }
-    else if (!JoueurTir) {
-
-        JoueurTir = true;
-    }
-    else if (!Elevation) {
-
-        Elevation = true;
-    }
-    else if (!Angle) {
-
-        Angle = true;
-    }
-    else if (!Puissance) {
-        Puissance = true;
-    }
-    else if (!shake) {
-
-        shake = true; //Si le jeu est termnié
-
-
-        JoueurTir = false; //Si le jeu continu
-        Elevation = false;
-        Angle = false;
-        Puissance = false;
-        shake = false;
-    }
-    else if (!fin) {
-
-        exit(0); // Si c'est la fin
+    if (resultat == "fin") {
 
         mode = false; // Si on continue;
         tailleEnX = false;
@@ -96,5 +42,136 @@ void Controller::handleResultat(const std::string resultat) {
         Angle = false;
         Puissance = false;
         shake = false;
+    }
+    else if (!mode) {
+        Mode = resultat;
+        mode = true;
+        //Update en envoyant un signal
+    }
+    else if (!tailleEnX) {
+        if (resultat == "confirm") 
+            tailleEnX = true;
+        else
+            numCols = std::stoi(resultat);
+            //Update en envoyant un signal
+    }
+    else if (!tailleEnY) {
+        if (resultat == "confirm") {
+            tailleEnY = true;
+
+        }
+        else
+            numRows = std::stoi(resultat);
+            //Update en envoyant un signal
+    }
+    else if (!Joueur1Bateau) {
+        if (resultat == "Joueur1") {
+            Joueur1Bateau = true;
+            //Update en envoyant un signal
+
+        }
+        else if (resultat == "confirm") {
+            //placer le bateau
+
+        }
+        else {
+            // changement des coordonnées
+            if (resultat == "N") {
+                // Vers le Nord
+
+            }
+            else if (resultat == "E") {
+                //Vers l'Est
+
+            }
+            else if (resultat == "S") {
+                //Vers le Sud
+
+            }
+            else if (resultat == "O") {
+                //Vers l'Ouest
+
+            }
+        }
+
+        
+    }
+    else if (!Joueur2Bateau) {
+        if (resultat == "Joueur2") {
+            Joueur2Bateau = true;
+            //Update en envoyant un signal
+
+        }
+        else if (resultat == "confirm") {
+            //placer le bateau
+
+        }
+        else {
+            // changement des coordonnées
+            if (resultat == "N") {
+                // Vers le Nord
+
+            }
+            else if (resultat == "E") {
+                //Vers l'Est
+
+            }
+            else if (resultat == "S") {
+                //Vers le Sud
+
+            }
+            else if (resultat == "O") {
+                //Vers l'Ouest
+
+            }
+        }
+
+
+    }
+    else if (!JoueurTir) {
+        //Update qui joue
+
+        JoueurTir = true;
+    }
+    else if (!Elevation) {
+        if (resultat == "confirmElevation") {
+            Elevation = true;
+            //Envoyer la confirmation
+
+        }
+        else {
+            //Update en envoyant un signal
+
+        }
+
+    }
+    else if (!Angle) {
+        if (resultat == "confirmAngle") {
+            Angle = true;
+            //Envoyer la confirmation
+
+        }
+        else {
+            //Update en envoyant un signal
+
+        }
+    }
+    else if (!Puissance) {
+        if (resultat == "confirmPuissance") {
+            Puissance = true;
+            //Envoyer la confirmation
+
+        }
+        else {
+            //Update en envoyant un signal
+
+        }
+    }
+    else if (!shake) {
+
+        JoueurTir = false; //le jeu continu
+        Elevation = false;
+        Angle = false;
+        Puissance = false;
     }
 }

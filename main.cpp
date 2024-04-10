@@ -66,12 +66,15 @@ int lejeu(concurrent_queue<std::string>* queueManette, concurrent_queue<std::str
         jeu.menuReglage(std::cout, std::cin);
         jeu.ajouterJoueur();
         jeu.ajouterJoueur();
-        queueAppli->push("Joueur1");
+        
         //jeu.menuInitJoueur(std::cout, myFile, jeu.getJoueur(0)); // Joueur 1 place ses bateaux
         jeu.menuInitJoueur(std::cout, std::cin, jeu.getJoueur(0)); // Joueur 1 place ses bateaux
-        queueAppli->push("Joueur2");
+        queueAppli->push("Joueur1");
+        
         //jeu.menuInitJoueur(std::cout, myFile, jeu.getJoueur(1)); // Joueur 2 place ses bateaux
         jeu.menuInitJoueur(std::cout, std::cin, jeu.getJoueur(1)); // Joueur 2 place ses bateaux
+        queueAppli->push("Joueur2");
+        
         switch (jeu.getMode()) {
         case MODE_NORMAL:
             //queueAppli->push("normal");
