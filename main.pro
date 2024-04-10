@@ -9,7 +9,6 @@ SOURCES +=	ui/menuwindow.cpp \
 			manette/manette.cpp \
 			lib_jeu/Bateau.cpp \
 			lib_jeu/Carte.cpp \
-			lib_jeu/jeu.cpp \
 			lib_jeu/Joueur.cpp \
 			external_libs/serial/SerialPort.cpp \
 			lib_jeu/jeu_App.cpp
@@ -19,7 +18,6 @@ HEADERS +=	ui/menuwindow.h \
 			manette/manette.h \
 			lib_jeu/Bateau.h \
 			lib_jeu/Carte.h \
-			lib_jeu/jeu.h \
 			lib_jeu/Joueur.h \
 			lib_jeu/Coordonnee.h \
 			external_libs/nlohmann/json.hpp \

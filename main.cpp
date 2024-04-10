@@ -1,4 +1,4 @@
-#include "ui/menuwindow.h"
+﻿#include "ui/menuwindow.h"
 #include <QApplication>
 #include <windows.h>
 
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     concurrent_queue<std::string> qManetteJeu;
     concurrent_queue<std::string> qAppliJeu;
     
-    //il y aurait dequoi � patenter si on veut que les deux puisse print du serial, je le fais pas car c'est pas le but final du jeu
+    //il y aurait dequoi à patenter si on veut que les deux puisse print du serial, je le fais pas car c'est pas le but final du jeu
     
 
     std::thread t1(lejeu, &qManetteJeu, &qAppliJeu);
@@ -40,6 +40,40 @@ int Appli(concurrent_queue<std::string>* q, int argc, char* argv[]) {
     QApplication a(argc, argv);
 
     MenuWindow w;
+    
+
+    //Implémentation de la manette
+    //Menu principal -> On demande le mode de jeux
+    std::string result;
+    std::string mode;
+    QWidget* gameWindow;
+    /*while (q->empty()) { //Attente du joueur pour le mode
+        Sleep(50);
+    };
+    result = q->front();
+    q->pop();
+    mode = result;*/
+
+    std::cout << "YOOOOOO";
+    
+    QDialog* dial = new QDialog(&w);
+    dial->resize(400, 300);
+    QLabel* text = new QLabel(dial);
+    text->setText("Choissisez le nombre de Colonne 10 ");
+
+    dial->show();
+    text->show();
+
+    do {
+        while (q->empty()) { //Attente du joueur
+            Sleep(50);
+        };
+        result = q->front();
+        q->pop();
+
+
+    } while (result != "confirm");
+
 
     return a.exec();
 }
@@ -77,15 +111,15 @@ int lejeu(concurrent_queue<std::string>* queueManette, concurrent_queue<std::str
         jeu.menuInitJoueur(std::cout, std::cin, jeu.getJoueur(1)); // Joueur 2 place ses bateaux
         switch (jeu.getMode()) {
         case MODE_NORMAL:
-            queueAppli->push("normal");
+            //queueAppli->push("normal");
             jeu.menuJeuNormal(std::cout, std::cin);
             break;
         case MODE_RAFALE:
-            queueAppli->push("rafale");
+            //queueAppli->push("rafale");
             jeu.menuJeuRafale(std::cout, std::cin);
             break;
         case MODE_STRATEGIE:
-            queueAppli->push("strategique");
+            //queueAppli->push("strategique");
             jeu.menuJeuStrategique(std::cout, std::cin);
             break;
         }

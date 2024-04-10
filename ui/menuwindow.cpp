@@ -80,16 +80,32 @@ MenuWindow::~MenuWindow() {
 
 void MenuWindow::startGame(QString gameMode) {
 	bool ok;
-	int numRows = QInputDialog::getInt(this, tr("Nombre de lignes"), tr("Entrez le nombre de lignes:"), 4, 1, 10, 1, &ok);
+	int numRows = QInputDialog::getInt(this, tr("Nombre de lignes"), tr("Entrez le nombre de lignes:"), 10, 5, 15, 1, &ok);
 	if (!ok)
 		return; 
 
-	int numColumns = QInputDialog::getInt(this, tr("Nombre de colonnes"), tr("Entrez le nombre de colonnes:"), 3, 1, 10, 1, &ok);
+	int numColumns = QInputDialog::getInt(this, tr("Nombre de colonnes"), tr("Entrez le nombre de colonnes:"), 10, 5, 10, 1, &ok);
 	if (!ok)
 		return; 
 
 	QWidget* gameWindow = new GameWindow(this, gameMode, numRows, numColumns, 100);
 	this->close();
+}
+
+QWidget* MenuWindow::startGameJeu(QString gameMode, int numRows, int numColumns) {
+	bool ok;
+	/*
+	int numRows = QInputDialog::getInt(this, tr("Nombre de lignes"), tr("Entrez le nombre de lignes:"), 10, 5, 15, 1, &ok);
+	if (!ok)
+		return;
+
+	int numColumns = QInputDialog::getInt(this, tr("Nombre de colonnes"), tr("Entrez le nombre de colonnes:"), 10, 5, 10, 1, &ok);
+	if (!ok)
+		return;
+	*/
+	QWidget* gameWindow = new GameWindow(this, gameMode, numRows, numColumns, 100);
+	this->close();
+	return gameWindow;
 }
 
 void MenuWindow::keyPressEvent(QKeyEvent* event) {

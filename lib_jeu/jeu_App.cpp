@@ -5,8 +5,8 @@
 //Sortie : rien
 Jeu::Jeu()
 {
-    tailleEnX = 5;
-    tailleEnY = 5;
+    tailleEnX = 10;
+    tailleEnY = 10;
     ventX = 0;
     ventY = 0;
 }
@@ -709,7 +709,7 @@ int Jeu::menuFin(std::ostream& sout, std::istream& sin)
     result = this->qManetteJeu->front();
     this->qManetteJeu->pop();
     if (result == "bouton1"){
-        qAppliJeu->push("confirm");
+        //qAppliJeu->push("confirm");
         return CONFIRMER;
     }
     else if (result == "bouton3")
