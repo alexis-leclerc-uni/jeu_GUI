@@ -214,20 +214,15 @@ void GameWindow::changeContent(int x, int y, int state) {
 		case 1:
 			image = "water/cloud.png";
 			break;
+        case 2:
+			image = "water/fire.png";
+			break;
 		default:
 			break;
 		}
 
-		if (state == 2) {
-            button->setStyleSheet("border-image: url();");
-            button->setText("bateau destrui");
-        }
-        else {
-            button->setStyleSheet(QString("border-image: url(sprites/%1);").arg(image));
-            button->setText("");
-
-        }
-
+		button->setStyleSheet(QString("border-image: url(sprites/%1);").arg(image));
+		button->setText("");
     }
 
     //QString background = border
