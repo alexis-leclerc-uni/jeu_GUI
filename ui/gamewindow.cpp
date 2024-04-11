@@ -50,13 +50,110 @@ GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boa
         }
     }
 
+    QVBoxLayout* mainLayout = new QVBoxLayout(this); 
+    mainLayout->addWidget(gridWidget);
+
+    QLabel* lblElevation = new QLabel(this);
+    lblElevation->setObjectName("lblElevation");
+    lblElevation->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    lblElevation->setFixedHeight(50); 
+    lblElevation->setStyleSheet("font-size: 30px;");
+
+    mainLayout->addWidget(lblElevation);
+
+    QLabel* lblAngle = new QLabel(this);
+    lblAngle->setObjectName("lblAngle");
+    lblAngle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    lblAngle->setFixedHeight(50); 
+    lblAngle->setStyleSheet("font-size: 30px;");
+
+    mainLayout->addWidget(lblAngle);
+
+    QLabel* lblPuissance = new QLabel(this);
+    lblPuissance->setObjectName("lblPuissance");
+    lblPuissance->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    lblPuissance->setFixedHeight(50); 
+    lblPuissance->setStyleSheet("font-size: 30px;");
+
+    mainLayout->addWidget(lblPuissance);
+
+    this->setLayout(mainLayout);
+
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+
     this->show();
     this->setFocus();
     this->boardCols = boardCols;
     this->boardRows = boardRows;
+
 }
 
 GameWindow::~GameWindow() {
+}
+
+void GameWindow::changeElevation(int elevation) {
+    QLabel* lblElev = findChild<QLabel*>("lblElevation");
+    lblElev->setText(QString("Élevation : %1").arg(elevation));
+}
+
+void GameWindow::changeAngle(int angle) {
+    QLabel* lblAngle = findChild<QLabel*>("lblAngle");
+    lblAngle->setText(QString("Angle : %1").arg(angle));
+}
+
+void GameWindow::changePuissance(int puissance) {
+    QLabel* lblPuissance = findChild<QLabel*>("lblPuissance");
+    lblPuissance->setText(QString("Puissance : %1").arg(puissance));
+}
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
+/// <param name="state">0 = eau, 1=cloud, 2 = bateau destruit</param>
+void GameWindow::changeContent(int x, int y, int state) {
+    QPushButton* button = findChild<QPushButton*>(QString("btn_%1_%2").arg(x).arg(y));
+
+    if (button) {
+		QString image = QString();
+		switch (state)
+		{
+		case 0:
+			image = "water/tile.png";
+			break;
+		case 1:
+			image = "water/cloud.png";
+			break;
+		default:
+			break;
+		}
+
+		if (state == 2) {
+            button->setStyleSheet("border-image: url();");
+            button->setText("bateau destrui");
+        }
+        else {
+            button->setStyleSheet(QString("border-image: url(sprites/%1);").arg(image));
+            button->setText("");
+
+        }
+
+    }
+
+    //QString background = border
+
+}
+
+void GameWindow::removeBoats() {
+    QRegularExpression exp(".*boat_.*");
+    QList<QPushButton*> boatsFound = findChildren<QPushButton*>(exp);
+    for (int i = 0; i < boatsFound.length(); i++)
+    {
+        QPushButton* button = boatsFound[i];
+        button->parentWidget()->layout()->removeWidget(button);
+        button->deleteLater();
+    }
 }
 
 void GameWindow::genCrosshair(int row, int col) {
@@ -263,6 +360,15 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
 				//regens the crosshair to change its color
 				changeCoords(0, 0);
 				break;
+            case Qt::Key_7:
+                changeContent(0, 0, 0);
+                break;
+            case Qt::Key_8:
+                changeContent(0, 0, 1);
+                break;
+            case Qt::Key_9:
+                changeContent(0, 0, 2);
+				break;
 			case Qt::Key_Return:
 				if (allBoatsPlaced()) {
 					//chepo
@@ -292,7 +398,6 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
 
     switch (event->key()) {
     case Qt::Key_Escape:
-        // Exit the application if the Escape key is pressed
         QCoreApplication::quit();
         break;
     case Qt::Key_Down:
@@ -308,7 +413,6 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
         changeCoords(1, 0);
         break;
     default:
-        // Call the base class implementation for other key events
         QWidget::keyPressEvent(event);
         break;
     }
