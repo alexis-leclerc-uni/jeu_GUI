@@ -286,7 +286,7 @@ int Jeu::menuInitJoueur(std::ostream& sout, std::istream& sin,Joueur* joueur)
     for (int i = 0; i < 5; i++)
     {
         do {
-            qAppliJeu->push(std::to_string(tailleBateau[i]));
+            qAppliJeu->push("T" + std::to_string(tailleBateau[i]));
             //Joystick contrôle la position
             //Le bouton bas contrôle la direction
             sautDePage(sout);
@@ -358,12 +358,16 @@ int Jeu::menuJeuNormal(std::ostream& sout, std::istream& sin)
     while (!vecJoueur[0]->aPerdu())
     {
         qAppliJeu->push("Joueur1");
+        qAppliJeu->push(vecJoueur[0]->carteString());
         menuTir(sout, sin, vecJoueur[0], vecJoueur[1]);
+        qAppliJeu->push(vecJoueur[0]->carteString());
         //jeu.menuTir(std::cout, std::cin, jeu.getJoueur(0), jeu.getJoueur(1));
         if (vecJoueur[1]->aPerdu())
             break;
         qAppliJeu->push("Joueur2");
+        qAppliJeu->push(vecJoueur[1]->carteString());
         menuTir(sout, sin, vecJoueur[1], vecJoueur[0]);
+        qAppliJeu->push(vecJoueur[1]->carteString());
         //jeu.menuTir(std::cout, std::cin, jeu.getJoueur(1), jeu.getJoueur(0));
     }
     return CONFIRMER;
@@ -381,18 +385,28 @@ int Jeu::menuJeuRafale(std::ostream& sout, std::istream& sin)
     }
     while (!vecJoueur[0]->aPerdu())
     {
-        for (int i = 0; i < 6 - vecJoueur[0]->nBateau(); i++)
+        for (int i = 0; i < 6 - vecJoueur[0]->nBateau(); i++) {
             qAppliJeu->push("Joueur1");
+            qAppliJeu->push(vecJoueur[0]->carteString());
             menuTir(sout, sin, vecJoueur[0], vecJoueur[1]);
-        //jeu.menuTir(std::cout, std::cin, jeu.getJoueur(0), jeu.getJoueur(1));
+            qAppliJeu->push(vecJoueur[0]->carteString());
+            //jeu.menuTir(std::cout, std::cin, jeu.getJoueur(0), jeu.getJoueur(1));
             if (vecJoueur[1]->aPerdu())
                 break;
-        for (int i = 0; i < 6 - vecJoueur[1]->nBateau(); i++)
+        }
+        if (vecJoueur[1]->aPerdu())
+                break;
+        for (int i = 0; i < 6 - vecJoueur[1]->nBateau(); i++) {
             qAppliJeu->push("Joueur2");
+            qAppliJeu->push(vecJoueur[1]->carteString());
             menuTir(sout, sin, vecJoueur[1], vecJoueur[0]);
-        //jeu.menuTir(std::cout, std::cin, jeu.getJoueur(1), jeu.getJoueur(0));<
+            qAppliJeu->push(vecJoueur[1]->carteString());
+            //jeu.menuTir(std::cout, std::cin, jeu.getJoueur(1), jeu.getJoueur(0));<
             if (vecJoueur[0]->aPerdu())
                 break;
+        }
+        if (vecJoueur[0]->aPerdu())
+            break;
     }
     return CONFIRMER;
 }
@@ -423,7 +437,9 @@ int Jeu::menuJeuStrategique(std::ostream& sout, std::istream& sin)
     while (!vecJoueur[0]->aPerdu())
     {        
         qAppliJeu->push("Joueur1");
+        qAppliJeu->push(vecJoueur[0]->carteString());
         menuTir(sout, sin, vecJoueur[0], vecJoueur[1]);
+        qAppliJeu->push(vecJoueur[0]->carteString());
         if (vecJoueur[0]->nBateau() == 2)
             vecJoueur[0]->getTypeAccepte()[4] = true;
         
@@ -431,7 +447,9 @@ int Jeu::menuJeuStrategique(std::ostream& sout, std::istream& sin)
         if (vecJoueur[1]->aPerdu())
             break;
         qAppliJeu->push("Joueur2");
+        qAppliJeu->push(vecJoueur[1]->carteString());
         menuTir(sout, sin, vecJoueur[1], vecJoueur[0]);
+        qAppliJeu->push(vecJoueur[1]->carteString());
         if (vecJoueur[1]->nBateau() == 2)
             vecJoueur[1]->getTypeAccepte()[4] = true;
         //jeu.menuTir(std::cout, std::cin, jeu.getJoueur(1), jeu.getJoueur(0));

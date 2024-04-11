@@ -1,6 +1,6 @@
 ﻿#include "gamewindow.h"
 
-GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boardCols, int buttonSize)
+GameWindow::GameWindow(Controller* c, QWidget* parent, QString gameMode, int boardRows, int boardCols, int buttonSize)
 {
 
 /*
@@ -16,6 +16,21 @@ GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boa
 
 
 */
+    controller = c;
+    
+    QObject::connect(c, SIGNAL(Controller::changeCoordsSignal), this, SLOT(ChangeCoordsSlot));
+    QObject::connect(c, SIGNAL(Controller::sendTailleBateau), this, SLOT(receiveTailleBateau));
+    QObject::connect(c, SIGNAL(Controller::sendPlaceBateau), this, SLOT(receivePlaceBateau));
+    QObject::connect(c, SIGNAL(Controller::sendJoueur1Fini), this, SLOT(receiveJoueur1Fini));
+    QObject::connect(c, SIGNAL(Controller::sendJoueur2Fini), this, SLOT(receiveJoueur2Fini));
+    QObject::connect(c, SIGNAL(Controller::sendJoueur), this, SLOT(receiveJoueur));
+    QObject::connect(c, SIGNAL(Controller::sendCarte), this, SLOT(receiveCarte));
+    QObject::connect(c, SIGNAL(Controller::sendElevation), this, SLOT(receiveElevation));
+    QObject::connect(c, SIGNAL(Controller::sendElevationConfirmation), this, SLOT(receiveElevationConfirmation));
+    QObject::connect(c, SIGNAL(Controller::sendAngle), this, SLOT(receiveAngle));
+    QObject::connect(c, SIGNAL(Controller::sendAngleConfirmation), this, SLOT(receiveAngleConfirmation));
+    QObject::connect(c, SIGNAL(Controller::sendPuissance), this, SLOT(receivePuissance));
+    QObject::connect(c, SIGNAL(Controller::sendPuissanceConfirmation), this, SLOT(receivePuissanceConfirmation));
 
     this->buttonSize = buttonSize;
 
@@ -90,6 +105,80 @@ GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boa
 
 GameWindow::~GameWindow() {
 }
+
+//PUBLIC SLOTS
+// ********************************************************************
+
+void GameWindow::receiveTailleBateau(int resultat) {
+    tailleBateau = resultat;
+}
+
+void GameWindow::receivePlaceBateau() {
+    //Recoit la confirmation pour placer le bateau
+
+}
+void GameWindow::receiveJoueur1Fini() {
+    //Recoit la confirmation que le joueur1 a fini de placer ses bateaux
+
+}
+
+void GameWindow::receiveJoueur2Fini() {
+    //Recoit la confirmation que le joueur1 a fini de placer ses bateaux
+
+}
+
+void GameWindow::receiveJoueur(std::string resultat) {
+    if (resultat == "Joueur1")
+        joueur1Joue = true;
+    else
+        joueur1Joue = false;
+    elevationConfirmation = false;
+    angleConfirmation = false;
+    puissanceConfirmation = false;
+}
+
+void GameWindow::receiveCarte(std::string resultat) {
+    std::string tableau = resultat;
+    int index = 0;
+    for (int y = 0; y < boardRows; y++) {
+        for (int x = 0; x < boardCols; x++) {
+            int car = std::stoi(tableau.substr(index, 1));
+            index++;
+
+            //Update chaque case à la position :: car contient {0, 1, 2, 3} 
+            // 0 = pas encore touché | 1 = miss | 2 = bateau touché | 3 = bateau vue
+
+        }
+    }
+}
+
+void GameWindow::receiveElevation(int resultat) {
+    elevation = resultat;
+}
+
+void GameWindow::receiveElevationConfirmation() {
+    //Passe à la prochaine étape (genre l'angle)
+    elevationConfirmation = true;
+}
+
+void GameWindow::receiveAngle(int resultat) {
+    angle = resultat;
+}
+
+void GameWindow::receiveAngleConfirmation() {
+    //Passe à la prochaine étape (genre la puissance)
+    angleConfirmation = true;
+}
+
+void GameWindow::receivePuissance(int resultat) {
+    puissance = resultat;
+}
+void GameWindow::receivePuissanceConfirmation() {
+    //Passe à la prochaine étape (genre le shake)
+    puissanceConfirmation = true;
+}
+
+// ********************************************************************
 
 void GameWindow::changeElevation(int elevation) {
     QLabel* lblElev = findChild<QLabel*>("lblElevation");
@@ -415,6 +504,29 @@ void GameWindow::keyPressEvent(QKeyEvent* event) {
     default:
         QWidget::keyPressEvent(event);
         break;
+    }
+}
+
+void GameWindow::ChangeCoordsSlot(std::string resultat) {
+    if (resultat == "N") {
+        // Vers le Nord
+        changeCoords(0, -1);
+
+    }
+    else if (resultat == "E") {
+        //Vers l'Est
+        changeCoords(1, 0);
+
+    }
+    else if (resultat == "S") {
+        //Vers le Sud
+        changeCoords(0, 1);
+
+    }
+    else if (resultat == "O") {
+        //Vers l'Ouest
+        changeCoords(-1, 0);
+
     }
 }
 

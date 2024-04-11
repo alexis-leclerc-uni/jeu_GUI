@@ -27,6 +27,7 @@ class Joueur {
         bool setTypeMissile(int type);
         Coordonnee getCordAttente();
         void setCordAttente(Coordonnee);
+        std::string carteString();
         void afficherHistoriqueTir(std::ostream& s);
         void afficherCartePreparation(std::ostream& s, Coordonnee pos, bool dir, int taille);
         void afficherCarteBateau(std::ostream& s);

@@ -25,14 +25,24 @@ class MenuWindow : public QWidget
 	Q_OBJECT
 
 public:
-	MenuWindow(QWidget* parent = nullptr);
+	MenuWindow(Controller* c, QWidget* parent = nullptr);
 	virtual ~MenuWindow();
 
 public slots:
-	QWidget* startGameJeu(QString gameMode, int numRows, int numColumns);
+	void receiveStartGameJeu();
+	void receiveMode(std::string resultat);
+	void receiveTailleX(int resultat);
+	void receiveTailleY(int resultat);
+	
 
 private slots:
 	void startGame(QString gameMode);
+
+private:
+	Controller* controller;
+	QString gameMode;
+	int numRows;
+	int numCols;
 
 protected:
 	void keyPressEvent(QKeyEvent* event) override;
