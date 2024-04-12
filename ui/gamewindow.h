@@ -64,9 +64,9 @@ private:
 	int angle = 0;
 	int puissance = 0;
 
-	int currentPos[2] = {-1, -1};
+	int currentPos[2] = {0, 0};
     QWidget* gridWidget;
-	bool rotationMode = false;
+	bool rotationMode = true;
 
 protected:
 	void genCrosshair(int row, int col);

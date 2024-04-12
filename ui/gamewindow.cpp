@@ -183,6 +183,9 @@ void GameWindow::receiveStartGame(int numRows, int numCols, QString gameMode) {
 
     this->show();
     this->setFocus();
+
+    genCrosshair(boardRows - 1, 0);
+    currentPos[1] = boardRows - 1;
 }
 
 
@@ -203,7 +206,6 @@ void GameWindow::receiveRotateBateau() {
 }
 void GameWindow::receiveJoueur1Fini() {
     //Recoit la confirmation que le joueur1 a fini de placer ses bateaux
-    rotationMode = true;
     removeBoats();
 }
 
@@ -379,7 +381,8 @@ void GameWindow::spawnBoat(int x, int y, bool orientation, int size) {
     QString boatType;
     qDebug() << "spawnin boat";
 
-
+    if (!orientation)
+        y -= size - 1;
     switch (size)
     {
 		case(2):

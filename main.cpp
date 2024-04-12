@@ -40,6 +40,7 @@ int main(int argc, char* argv[])
     QObject::connect(&Appli, &Controller::changeCoordsSignal, &g, &GameWindow::ChangeCoordsSlot);
     QObject::connect(&Appli, &Controller::sendTailleBateau, &g, &GameWindow::receiveTailleBateau);
     QObject::connect(&Appli, &Controller::sendPlaceBateau, &g, &GameWindow::receivePlaceBateau);
+    QObject::connect(&Appli, &Controller::sendRotateBateau, &g, &GameWindow::receiveRotateBateau);
     QObject::connect(&Appli, &Controller::sendJoueur1Fini, &g, &GameWindow::receiveJoueur1Fini);
     QObject::connect(&Appli, &Controller::sendJoueur2Fini, &g, &GameWindow::receiveJoueur2Fini);
     QObject::connect(&Appli, &Controller::sendJoueur, &g, &GameWindow::receiveJoueur);
