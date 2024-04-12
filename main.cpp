@@ -17,26 +17,45 @@ using lime62::concurrent_queue;
 int lejeu(concurrent_queue<std::string>* queueManette, concurrent_queue<std::string>* queueAppli);
 int manetteFn(concurrent_queue<std::string>* q);
 
+concurrent_queue<std::string> qManetteJeu;
+concurrent_queue<std::string> qAppliJeu;
+
+
+
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
-
-    MenuWindow w;
-
-    concurrent_queue<std::string> qManetteJeu;
-    concurrent_queue<std::string> qAppliJeu;
-    
     //il y aurait dequoi à patenter si on veut que les deux puisse print du serial, je le fais pas car c'est pas le but final du jeu
-    
-
-    std::thread t1(lejeu, &qManetteJeu, &qAppliJeu);
-    //std::thread t2(manetteFn, &qManetteJeu);
     Controller Appli = Controller(&qAppliJeu);
+    std::thread t1(lejeu, &qManetteJeu, &qAppliJeu);
+    std::thread t2(manetteFn, &qManetteJeu);
+    MenuWindow w;
+    GameWindow g;
+
+
+    QObject::connect(&Appli, &Controller::sendMode, &w, &MenuWindow::receiveMode);
+    QObject::connect(&Appli, &Controller::sendTailleX, &w, &MenuWindow::receiveTailleX);
+    QObject::connect(&Appli, &Controller::sendTailleY, &w, &MenuWindow::receiveTailleY);
+    QObject::connect(&Appli, &Controller::sendStartGameJeu, &w, &MenuWindow::receiveStartGameJeu);
+    QObject::connect(&Appli, &Controller::changeCoordsSignal, &g, &GameWindow::ChangeCoordsSlot);
+    QObject::connect(&Appli, &Controller::sendTailleBateau, &g, &GameWindow::receiveTailleBateau);
+    QObject::connect(&Appli, &Controller::sendPlaceBateau, &g, &GameWindow::receivePlaceBateau);
+    QObject::connect(&Appli, &Controller::sendJoueur1Fini, &g, &GameWindow::receiveJoueur1Fini);
+    QObject::connect(&Appli, &Controller::sendJoueur2Fini, &g, &GameWindow::receiveJoueur2Fini);
+    QObject::connect(&Appli, &Controller::sendJoueur, &g, &GameWindow::receiveJoueur);
+    QObject::connect(&Appli, &Controller::sendCarte, &g, &GameWindow::receiveCarte);
+    QObject::connect(&Appli, &Controller::sendElevation, &g, &GameWindow::receiveElevation);
+    QObject::connect(&Appli, &Controller::sendElevationConfirmation, &g, &GameWindow::receiveElevationConfirmation);
+    QObject::connect(&Appli, &Controller::sendAngle, &g, &GameWindow::receiveAngle);
+    QObject::connect(&Appli, &Controller::sendAngleConfirmation, &g, &GameWindow::receiveAngleConfirmation);
+    QObject::connect(&Appli, &Controller::sendPuissance, &g, &GameWindow::receivePuissance);
+    QObject::connect(&Appli, &Controller::sendPuissanceConfirmation, &g, &GameWindow::receivePuissanceConfirmation);
+    QObject::connect(&w, &MenuWindow::sendStartGame, &g, &GameWindow::receiveStartGame);
+    
 
     a.exec();
-
     t1.join();
-    //t2.join();
+    t2.join();
 
     return 0; 
 }

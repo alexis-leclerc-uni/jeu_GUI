@@ -42,7 +42,7 @@ Manette::Manette(const std::string& port, concurrent_queue<std::string>* q){
         
         // Impression du message de l'Arduino si valide
         if(raw_msg.size()>0){
-            std::cout << "raw_msg: " << raw_msg << std::endl;  // debug
+            //std::cout << "raw_msg: " << raw_msg << std::endl;  // debug
             // Transfert du message en json
             //std::cout << raw_msg << std::endl;
             try
