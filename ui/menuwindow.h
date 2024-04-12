@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QApplication>
+#include <QObject>
 #include <QWidget>
 #include <QMainWindow>
 #include <QVBoxLayout>
@@ -16,17 +17,22 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QGridLayout>
+#include <QPointer>
 
 #include "ui/gamewindow.h"
+#include "ui/threadSignal.h"
 
+#include "external_libs/concurrent_queue.hpp"
+using lime62::concurrent_queue;
 
 class MenuWindow : public QWidget
 {
 	Q_OBJECT
 
 public:
-	MenuWindow(Controller* c, QWidget* parent = nullptr);
+	MenuWindow(QWidget* parent = nullptr);
 	virtual ~MenuWindow();
+
 
 public slots:
 	void receiveStartGameJeu();
@@ -36,10 +42,12 @@ public slots:
 	
 
 private slots:
-	void startGame(QString gameMode);
+	void startGame(QString gamemode);
+
+signals:
+	void sendStartGame(int numRows, int numCols, QString gameMode);
 
 private:
-	Controller* controller;
 	QString gameMode;
 	int numRows;
 	int numCols;

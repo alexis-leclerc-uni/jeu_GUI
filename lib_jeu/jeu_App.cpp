@@ -304,35 +304,51 @@ int Jeu::menuInitJoueur(std::ostream& sout, std::istream& sin,Joueur* joueur)
             }
             else if (result == "N"){
                 qAppliJeu->push("N");
-                y++;
+                if (y < tailleEnY - 1)
+                    y++;
             }
             else if (result == "NE"){
                 qAppliJeu->push("N"); qAppliJeu->push("E");
-                y++; x++;
+                if (y < tailleEnY - 1)
+                    y++;
+                if (x < tailleEnX - 1)
+                    x++;
             }
             else if (result == "E"){
                 qAppliJeu->push("E");
-                x++;
+                if (x < tailleEnX - 1)
+                    x++;
             }
             else if (result == "SE"){
                 qAppliJeu->push("S"); qAppliJeu->push("E");
-                y--; x++;
+                if (y > 0)
+                    y--;
+                if (x < tailleEnX - 1)
+                    x++;
             }
             else if (result == "S"){
                 qAppliJeu->push("S");
-                y--;
+                if (y > 0)
+                    y--;
             }
             else if (result == "SO"){
                 qAppliJeu->push("S"); qAppliJeu->push("O");
-                x--; y--;
+                if (x > 0)
+                    x--;
+                if (y > 0)
+                    y--;
             }
             else if (result == "O"){
                 qAppliJeu->push("O");
-                x--;
+                if (x > 0)
+                    x--;
             }
             else if (result == "NO"){
                 qAppliJeu->push("N"); qAppliJeu->push("O");
-                x--; y++;
+                if (x > 0)
+                    x--;
+                if (y < tailleEnY - 1)
+                    y++;
             }
             else if (result.substr(0,3) == "pot"){
                 valPot = std::stoi(result.substr(3,3));

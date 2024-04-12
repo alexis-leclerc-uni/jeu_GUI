@@ -1,8 +1,7 @@
 ﻿#include "menuwindow.h"
 
-MenuWindow::MenuWindow(Controller* c, QWidget* parent)
+MenuWindow::MenuWindow(QWidget* parent)
 {
-	controller = c;
 	this->setWindowTitle("Menu du jeu");
 
 	//Modes : normal, rafale, stratégique
@@ -67,10 +66,6 @@ MenuWindow::MenuWindow(Controller* c, QWidget* parent)
 	connect(btnNormal, &QPushButton::clicked, this, [this]() {startGame("Normal"); });
 	connect(btnRafale, &QPushButton::clicked, this, [this]() {startGame("Rafale"); });
 	connect(btnStrategique, &QPushButton::clicked, this, [this]() {startGame("Strategique"); });
-	connect(controller, SIGNAL(Controller::sendMode), this, SLOT(MenuWindow::receiveMode));
-	connect(controller, SIGNAL(Controller::sendTailleX), this, SLOT(MenuWindow::receiveTailleX));
-	connect(controller, SIGNAL(Controller::sendTailleY), this, SLOT(MenuWindow::receiveTailleY));
-	connect(controller, SIGNAL(Controller::sendStartGameJeu), this, SLOT(MenuWindow::receiveStartGameJeu));
 
 
 	//ohhhh oui
@@ -81,25 +76,25 @@ MenuWindow::MenuWindow(Controller* c, QWidget* parent)
 	this->show();
 }
 
-MenuWindow::~MenuWindow() {
-}
-
 void MenuWindow::startGame(QString gameMode) {
 	bool ok;
 	int numRows = QInputDialog::getInt(this, tr("Nombre de lignes"), tr("Entrez le nombre de lignes:"), 10, 5, 15, 1, &ok);
 	if (!ok)
-		return; 
+		return;
 
 	int numColumns = QInputDialog::getInt(this, tr("Nombre de colonnes"), tr("Entrez le nombre de colonnes:"), 10, 5, 10, 1, &ok);
 	if (!ok)
-		return; 
+		return;
 
-	QWidget* gameWindow = new GameWindow(controller, this, gameMode, numRows, numColumns, 100);
+	QWidget* gameWindow = new GameWindow(this, gameMode, numRows, numColumns, 100);
 	this->close();
 }
 
+MenuWindow::~MenuWindow() {
+}
+
 void MenuWindow::receiveStartGameJeu() {
-	QWidget* gameWindow = new GameWindow(controller, this, gameMode, numRows, numCols, 100);
+	emit sendStartGame(numRows, numCols, gameMode);
 	this->close();
 }
 
@@ -114,6 +109,7 @@ void MenuWindow::receiveTailleX(int resultat) {
 void MenuWindow::receiveTailleY(int resultat) {
 	numRows = resultat;
 }
+
 
 
 void MenuWindow::keyPressEvent(QKeyEvent* event) {

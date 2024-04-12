@@ -1,6 +1,6 @@
 ﻿#include "gamewindow.h"
 
-GameWindow::GameWindow(Controller* c, QWidget* parent, QString gameMode, int boardRows, int boardCols, int buttonSize)
+GameWindow::GameWindow(QWidget* parent)
 {
 
 /*
@@ -16,22 +16,26 @@ GameWindow::GameWindow(Controller* c, QWidget* parent, QString gameMode, int boa
 
 
 */
-    controller = c;
-    
-    QObject::connect(c, SIGNAL(Controller::changeCoordsSignal), this, SLOT(ChangeCoordsSlot));
-    QObject::connect(c, SIGNAL(Controller::sendTailleBateau), this, SLOT(receiveTailleBateau));
-    QObject::connect(c, SIGNAL(Controller::sendPlaceBateau), this, SLOT(receivePlaceBateau));
-    QObject::connect(c, SIGNAL(Controller::sendJoueur1Fini), this, SLOT(receiveJoueur1Fini));
-    QObject::connect(c, SIGNAL(Controller::sendJoueur2Fini), this, SLOT(receiveJoueur2Fini));
-    QObject::connect(c, SIGNAL(Controller::sendJoueur), this, SLOT(receiveJoueur));
-    QObject::connect(c, SIGNAL(Controller::sendCarte), this, SLOT(receiveCarte));
-    QObject::connect(c, SIGNAL(Controller::sendElevation), this, SLOT(receiveElevation));
-    QObject::connect(c, SIGNAL(Controller::sendElevationConfirmation), this, SLOT(receiveElevationConfirmation));
-    QObject::connect(c, SIGNAL(Controller::sendAngle), this, SLOT(receiveAngle));
-    QObject::connect(c, SIGNAL(Controller::sendAngleConfirmation), this, SLOT(receiveAngleConfirmation));
-    QObject::connect(c, SIGNAL(Controller::sendPuissance), this, SLOT(receivePuissance));
-    QObject::connect(c, SIGNAL(Controller::sendPuissanceConfirmation), this, SLOT(receivePuissanceConfirmation));
 
+     
+
+}
+GameWindow::GameWindow(QWidget* parent, QString gameMode, int boardRows, int boardCols, int buttonSize)
+{
+
+    /*
+        explication gab:
+
+            4 cases
+                Nuage quand on sait pas
+                Eau : quand y'a rien
+                Bateau : quand on sait qui en a un    (a cause sonde fucked up)
+                Bateau detruit : quand C'est detruit
+
+        TODO:: regler les multiples problemes de coordonnees
+
+
+    */
     this->buttonSize = buttonSize;
 
     this->setWindowTitle("Jeu en mode " + gameMode);
@@ -65,13 +69,13 @@ GameWindow::GameWindow(Controller* c, QWidget* parent, QString gameMode, int boa
         }
     }
 
-    QVBoxLayout* mainLayout = new QVBoxLayout(this); 
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(gridWidget);
 
     QLabel* lblElevation = new QLabel(this);
     lblElevation->setObjectName("lblElevation");
     lblElevation->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    lblElevation->setFixedHeight(50); 
+    lblElevation->setFixedHeight(50);
     lblElevation->setStyleSheet("font-size: 30px;");
 
     mainLayout->addWidget(lblElevation);
@@ -79,7 +83,7 @@ GameWindow::GameWindow(Controller* c, QWidget* parent, QString gameMode, int boa
     QLabel* lblAngle = new QLabel(this);
     lblAngle->setObjectName("lblAngle");
     lblAngle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    lblAngle->setFixedHeight(50); 
+    lblAngle->setFixedHeight(50);
     lblAngle->setStyleSheet("font-size: 30px;");
 
     mainLayout->addWidget(lblAngle);
@@ -87,7 +91,7 @@ GameWindow::GameWindow(Controller* c, QWidget* parent, QString gameMode, int boa
     QLabel* lblPuissance = new QLabel(this);
     lblPuissance->setObjectName("lblPuissance");
     lblPuissance->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    lblPuissance->setFixedHeight(50); 
+    lblPuissance->setFixedHeight(50);
     lblPuissance->setStyleSheet("font-size: 30px;");
 
     mainLayout->addWidget(lblPuissance);
@@ -108,6 +112,79 @@ GameWindow::~GameWindow() {
 
 //PUBLIC SLOTS
 // ********************************************************************
+void GameWindow::receiveStartGame(int numRows, int numCols, QString gameMode) {
+    boardCols = numCols;
+    boardRows = numRows;
+
+    std::cout << "X = " << boardCols << std::endl;
+    std::cout << "Y = " << boardRows << std::endl;
+
+    this->setWindowTitle("Jeu en mode " + gameMode);
+
+    int spacing = 0; // Adjust as needed
+
+    // Create a container widget
+    QWidget* gridWidget = new QWidget(this);
+    this->gridWidget = gridWidget;
+    gridWidget->setObjectName("gridWidget");
+    gridWidget->setStyleSheet("QWidget#gridWidget { background-color: white; }");
+
+    // Calculate the total width and height needed for the buttons and spacing
+    int totalWidth = boardCols * (buttonSize + spacing) - spacing;
+    int totalHeight = boardRows * (buttonSize + spacing) - spacing;
+
+    // Set the size of the container widget
+    gridWidget->setFixedSize(totalWidth, totalHeight);
+
+    // Create buttons and position them manually
+    for (int row = boardRows - 1; row >= 0; --row) {
+        for (int col = 0; col < boardCols; ++col) {
+            QPushButton* button = new QPushButton(gridWidget);
+            button->setFixedSize(buttonSize, buttonSize);
+            button->setObjectName(QString("btn_%1_%2").arg(row).arg(col));
+            button->setGeometry(col * (this->buttonSize + spacing), row * (this->buttonSize + spacing), this->buttonSize, this->buttonSize);
+            button->setStyleSheet("border-image: url(sprites/water/tile.png); color: blue; border: none;");
+            connect(button, &QPushButton::clicked, this, [row, col, this, gridWidget]() {
+                genCrosshair(row, col);
+                });
+        }
+    }
+
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(gridWidget);
+
+    QLabel* lblElevation = new QLabel(this);
+    lblElevation->setObjectName("lblElevation");
+    lblElevation->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    lblElevation->setFixedHeight(50);
+    lblElevation->setStyleSheet("font-size: 30px;");
+
+    mainLayout->addWidget(lblElevation);
+
+    QLabel* lblAngle = new QLabel(this);
+    lblAngle->setObjectName("lblAngle");
+    lblAngle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    lblAngle->setFixedHeight(50);
+    lblAngle->setStyleSheet("font-size: 30px;");
+
+    mainLayout->addWidget(lblAngle);
+
+    QLabel* lblPuissance = new QLabel(this);
+    lblPuissance->setObjectName("lblPuissance");
+    lblPuissance->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    lblPuissance->setFixedHeight(50);
+    lblPuissance->setStyleSheet("font-size: 30px;");
+
+    mainLayout->addWidget(lblPuissance);
+
+    this->setLayout(mainLayout);
+
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+
+    this->show();
+    this->setFocus();
+}
+
 
 void GameWindow::receiveTailleBateau(int resultat) {
     tailleBateau = resultat;
@@ -115,16 +192,24 @@ void GameWindow::receiveTailleBateau(int resultat) {
 
 void GameWindow::receivePlaceBateau() {
     //Recoit la confirmation pour placer le bateau
+    spawnBoat(currentPos[0], currentPos[1], rotationMode, tailleBateau);
+
+}
+
+void GameWindow::receiveRotateBateau() {
+    //Fait tourner le bateau
+    rotationMode = !rotationMode;
 
 }
 void GameWindow::receiveJoueur1Fini() {
     //Recoit la confirmation que le joueur1 a fini de placer ses bateaux
-
+    rotationMode = true;
+    removeBoats();
 }
 
 void GameWindow::receiveJoueur2Fini() {
     //Recoit la confirmation que le joueur1 a fini de placer ses bateaux
-
+    changeGamemode(1);
 }
 
 void GameWindow::receiveJoueur(std::string resultat) {
@@ -154,6 +239,7 @@ void GameWindow::receiveCarte(std::string resultat) {
 
 void GameWindow::receiveElevation(int resultat) {
     elevation = resultat;
+    changeElevation(resultat);
 }
 
 void GameWindow::receiveElevationConfirmation() {
@@ -163,6 +249,7 @@ void GameWindow::receiveElevationConfirmation() {
 
 void GameWindow::receiveAngle(int resultat) {
     angle = resultat;
+    changeAngle(resultat);
 }
 
 void GameWindow::receiveAngleConfirmation() {
@@ -172,6 +259,7 @@ void GameWindow::receiveAngleConfirmation() {
 
 void GameWindow::receivePuissance(int resultat) {
     puissance = resultat;
+    changePuissance(resultat);
 }
 void GameWindow::receivePuissanceConfirmation() {
     //Passe à la prochaine étape (genre le shake)
@@ -274,7 +362,7 @@ void GameWindow::genCrosshair(int row, int col) {
 void GameWindow::changeCoords(int x, int y) {
     if (this->currentPos[0] == -1) {
         this->currentPos[0] = 0;
-        this->currentPos[1] = 0;
+        this->currentPos[1] = boardRows - 1;
     }
     // conditions pour pas se rendre dans le vide
     else if((this->currentPos[0] + x >= 0) 
@@ -369,7 +457,7 @@ void GameWindow::spawnBoat(int x, int y, bool orientation, int size) {
 
 
 	}
-    resetCrosshair(true);
+    resetCrosshair(false);
 
 }
 
