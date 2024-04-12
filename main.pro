@@ -13,7 +13,8 @@ SOURCES +=	ui/menuwindow.cpp \
 			external_libs/serial/SerialPort.cpp \
 			lib_jeu/jeu_App.cpp \
 			ui/threadSignal.cpp \
-			ui/controller.cpp
+			ui/controller.cpp \
+			ui/mainwindow.cpp
 
 HEADERS +=	ui/menuwindow.h \
 			ui/gamewindow.h \
@@ -27,4 +28,5 @@ HEADERS +=	ui/menuwindow.h \
 			external_libs/concurrent_queue.hpp \
 			lib_jeu/jeu_App.h \
 			ui/threadSignal.h \
-			ui/controller.h
+			ui/controller.h \
+			ui/mainwindow.h

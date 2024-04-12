@@ -1,7 +1,8 @@
 ﻿#include "ui/menuwindow.h"
 #include <QApplication>
 #include <windows.h>
-#include "ui/threadSignal.h"
+#include "ui/controller.h"
+#include "ui/mainwindow.h"
 
 // ConsoleApplication3.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
@@ -11,6 +12,7 @@
 #include "external_libs/concurrent_queue.hpp"
 #include <fstream>
 #include <thread> 
+
 
 using lime62::concurrent_queue;
 
@@ -28,12 +30,18 @@ int main(int argc, char* argv[])
     //il y aurait dequoi à patenter si on veut que les deux puisse print du serial, je le fais pas car c'est pas le but final du jeu
     Controller Appli = Controller(&qAppliJeu);
     std::thread t1(lejeu, &qManetteJeu, &qAppliJeu);
-    std::thread t2(manetteFn, &qManetteJeu);
+    //std::thread t2(manetteFn, &qManetteJeu);
     MenuWindow w;
     GameWindow g;
+    MainWindow w1; //Taille en X
+    MainWindow w2; //Taille en Y
 
 
     QObject::connect(&Appli, &Controller::sendMode, &w, &MenuWindow::receiveMode);
+    QObject::connect(&Appli, &Controller::sendStartTailleX, &w1, &MainWindow::receiveStart);
+    QObject::connect(&Appli, &Controller::sendStartTailleY, &w2, &MainWindow::receiveStart);
+    QObject::connect(&Appli, &Controller::sendEndTailleX, &w1, &MainWindow::receiveEnd);
+    QObject::connect(&Appli, &Controller::sendEndTailleY, &w2, &MainWindow::receiveEnd);
     QObject::connect(&Appli, &Controller::sendTailleX, &w, &MenuWindow::receiveTailleX);
     QObject::connect(&Appli, &Controller::sendTailleY, &w, &MenuWindow::receiveTailleY);
     QObject::connect(&Appli, &Controller::sendStartGameJeu, &w, &MenuWindow::receiveStartGameJeu);
@@ -52,11 +60,12 @@ int main(int argc, char* argv[])
     QObject::connect(&Appli, &Controller::sendPuissance, &g, &GameWindow::receivePuissance);
     QObject::connect(&Appli, &Controller::sendPuissanceConfirmation, &g, &GameWindow::receivePuissanceConfirmation);
     QObject::connect(&w, &MenuWindow::sendStartGame, &g, &GameWindow::receiveStartGame);
+
     
 
     a.exec();
     t1.join();
-    t2.join();
+    //t2.join();
 
     return 0; 
 }

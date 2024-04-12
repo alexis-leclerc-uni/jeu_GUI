@@ -37,10 +37,14 @@ void Controller::handleResultat(const std::string resultat) {
         mode = true;
         //Update en envoyant un signal
         emit sendMode(resultat);
+        emit sendStartTailleX("Choissiser le nombre de colonne");
     }
     else if (!tailleEnX) {
-        if (resultat == "confirm")
+        if (resultat == "confirm") {
             tailleEnX = true;
+            emit sendEndTailleX();
+            emit sendStartTailleY("Choissiser le nombre de ligne");
+        }
         else {
 
             //Update en envoyant un signal
@@ -51,6 +55,7 @@ void Controller::handleResultat(const std::string resultat) {
         if (resultat == "confirm") {
             tailleEnY = true;
             //Commencer le jeu
+            emit sendEndTailleY();
             emit sendStartGameJeu();
         }
         else {

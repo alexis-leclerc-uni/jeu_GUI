@@ -327,8 +327,10 @@ void GameWindow::removeBoats() {
     for (int i = 0; i < boatsFound.length(); i++)
     {
         QPushButton* button = boatsFound[i];
-        button->parentWidget()->layout()->removeWidget(button);
-        button->deleteLater();
+        if (button) {
+            button->parentWidget()->layout()->removeWidget(button);
+            button->deleteLater();
+        }
     }
 }
 

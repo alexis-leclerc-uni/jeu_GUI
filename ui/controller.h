@@ -32,6 +32,10 @@ signals:
     void sendTailleX(int resultat);
     void sendTailleY(int resultat);
     void sendMode(std::string resultat);
+    void sendStartTailleX(std::string texteTitre);
+    void sendStartTailleY(std::string texteTitre);
+    void sendEndTailleX();
+    void sendEndTailleY();
     void sendStartGameJeu();
     void sendTailleBateau(int resultat);
     void sendPlaceBateau();
