@@ -234,7 +234,9 @@ void GameWindow::receiveCarte(std::string resultat) {
 
             //Update chaque case à la position :: car contient {0, 1, 2, 3} 
             // 0 = pas encore touché | 1 = miss | 2 = bateau touché | 3 = bateau vue
-
+            if (car == 3)
+                car = 0;
+            changeContent(x, y, car);
         }
     }
 }
@@ -290,7 +292,7 @@ void GameWindow::changePuissance(int puissance) {
 /// </summary>
 /// <param name="x"></param>
 /// <param name="y"></param>
-/// <param name="state">0 = eau, 1=cloud, 2 = bateau destruit</param>
+/// <param name="state">0 = cloud, 1=eau, 2 = bateau destruit</param>
 void GameWindow::changeContent(int x, int y, int state) {
     QPushButton* button = findChild<QPushButton*>(QString("btn_%1_%2").arg(x).arg(y));
 
@@ -298,10 +300,10 @@ void GameWindow::changeContent(int x, int y, int state) {
 		QString image = QString();
 		switch (state)
 		{
-		case 0:
+		case 1:
 			image = "water/tile.png";
 			break;
-		case 1:
+		case 0:
 			image = "water/cloud.png";
 			break;
         case 2:
