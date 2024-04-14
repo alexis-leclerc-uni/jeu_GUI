@@ -29,6 +29,10 @@ MainWindow::MainWindow(std::string texteTitre, QWidget* parent)
 MainWindow::~MainWindow() {
 }
 
+MainWindow::MainWindow(QWidget* parent) {
+
+}
+
 
 void MainWindow::changeSize(int size) {
 	QLabel* label = findChild<QLabel*>(QString("labelMiddle"));
@@ -38,7 +42,7 @@ void MainWindow::changeSize(int size) {
 
 }
 
-void MainWindow::receiveChaneSize(int size) {
+void MainWindow::receiveChangeSize(int size) {
 	changeSize(size);
 }
 

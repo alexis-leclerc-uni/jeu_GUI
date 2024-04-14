@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     //il y aurait dequoi à patenter si on veut que les deux puisse print du serial, je le fais pas car c'est pas le but final du jeu
     Controller Appli = Controller(&qAppliJeu);
     std::thread t1(lejeu, &qManetteJeu, &qAppliJeu);
-    //std::thread t2(manetteFn, &qManetteJeu);
+    std::thread t2(manetteFn, &qManetteJeu);
     MenuWindow w;
     GameWindow g;
     MainWindow w1; //Taille en X
@@ -39,6 +39,8 @@ int main(int argc, char* argv[])
 
     QObject::connect(&Appli, &Controller::sendMode, &w, &MenuWindow::receiveMode);
     QObject::connect(&Appli, &Controller::sendStartTailleX, &w1, &MainWindow::receiveStart);
+    QObject::connect(&Appli, &Controller::sendTailleX, &w1, &MainWindow::receiveChangeSize);
+    QObject::connect(&Appli, &Controller::sendTailleY, &w2, &MainWindow::receiveChangeSize); 
     QObject::connect(&Appli, &Controller::sendStartTailleY, &w2, &MainWindow::receiveStart);
     QObject::connect(&Appli, &Controller::sendEndTailleX, &w1, &MainWindow::receiveEnd);
     QObject::connect(&Appli, &Controller::sendEndTailleY, &w2, &MainWindow::receiveEnd);
@@ -65,7 +67,7 @@ int main(int argc, char* argv[])
 
     a.exec();
     t1.join();
-    //t2.join();
+    t2.join();
 
     return 0; 
 }

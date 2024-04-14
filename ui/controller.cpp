@@ -89,6 +89,9 @@ void Controller::handleResultat(const std::string resultat) {
 
     }
     else if (!Joueur2Bateau) {
+        if (resultat.substr(0, 1) == "T") {
+            emit sendTailleBateau(std::stoi(resultat.substr(1, 1)));
+        }
         if (resultat == "Joueur2") {
             Joueur2Bateau = true;
             //Update en envoyant un signal
@@ -99,6 +102,11 @@ void Controller::handleResultat(const std::string resultat) {
             //placer le bateau
             emit sendPlaceBateau();
 
+        }
+
+        else if (resultat == "rotate") {
+            //fait tourner le bateau
+            emit sendRotateBateau();
         }
         else {
             // changement des coordonnées
@@ -128,7 +136,11 @@ void Controller::handleResultat(const std::string resultat) {
         }
         else {
             //Update en envoyant un signal
-            emit sendElevation(std::stoi(resultat));
+            try {
+                std::cout << resultat << std::endl;
+                emit sendElevation(std::stoi(resultat));
+            }
+            catch (...) {}
         }
 
     }
@@ -140,8 +152,10 @@ void Controller::handleResultat(const std::string resultat) {
         }
         else {
             //Update en envoyant un signal
+            try {
             emit sendAngle(std::stoi(resultat));
-
+            }
+            catch (...) {}
         }
     }
     else if (!Puissance) {
@@ -152,17 +166,22 @@ void Controller::handleResultat(const std::string resultat) {
         }
         else {
             //Update en envoyant un signal
+            try {
             emit sendPuissance(std::stoi(resultat));
+            }
+            catch (...) {}
         }
     }
     else if (!shake) {
+        if (resultat.length() >= 25) {
 
-        emit sendCarte(resultat);
+            emit sendCarte(resultat);
 
-        JoueurTir = false; //le jeu continu
-        Elevation = false;
-        Angle = false;
-        Puissance = false;
-        Carte = false;
+            JoueurTir = false; //le jeu continu
+            Elevation = false;
+            Angle = false;
+            Puissance = false;
+            Carte = false;
+        }
     }
 }

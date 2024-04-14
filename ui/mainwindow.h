@@ -30,7 +30,7 @@ public:
 public slots:
 	void receiveStart(std::string texteTitre);
 	void receiveEnd();
-	void receiveChaneSize(int size);
+	void receiveChangeSize(int size);
 
 signals:
 

@@ -374,16 +374,16 @@ int Jeu::menuJeuNormal(std::ostream& sout, std::istream& sin)
     while (!vecJoueur[0]->aPerdu())
     {
         qAppliJeu->push("Joueur1");
-        qAppliJeu->push(vecJoueur[0]->carteString());
+        qAppliJeu->push(vecJoueur[1]->carteString());
         menuTir(sout, sin, vecJoueur[0], vecJoueur[1]);
-        qAppliJeu->push(vecJoueur[0]->carteString());
+        qAppliJeu->push(vecJoueur[1]->carteString());
         //jeu.menuTir(std::cout, std::cin, jeu.getJoueur(0), jeu.getJoueur(1));
         if (vecJoueur[1]->aPerdu())
             break;
         qAppliJeu->push("Joueur2");
-        qAppliJeu->push(vecJoueur[1]->carteString());
+        qAppliJeu->push(vecJoueur[0]->carteString());
         menuTir(sout, sin, vecJoueur[1], vecJoueur[0]);
-        qAppliJeu->push(vecJoueur[1]->carteString());
+        qAppliJeu->push(vecJoueur[0]->carteString());
         //jeu.menuTir(std::cout, std::cin, jeu.getJoueur(1), jeu.getJoueur(0));
     }
     return CONFIRMER;
@@ -456,6 +456,7 @@ int Jeu::menuJeuStrategique(std::ostream& sout, std::istream& sin)
         qAppliJeu->push(vecJoueur[0]->carteString());
         menuTir(sout, sin, vecJoueur[0], vecJoueur[1]);
         qAppliJeu->push(vecJoueur[0]->carteString());
+        Sleep(2000);
         if (vecJoueur[0]->nBateau() == 2)
             vecJoueur[0]->getTypeAccepte()[4] = true;
         
@@ -603,7 +604,7 @@ int Jeu::menuTir(std::ostream& sout, std::istream& sin,Joueur* joueur, Joueur* a
                 type = M_BOMBE;
             }
             
-        } while (!joueur->setTypeMissile(type));
+        } while (!joueur->setTypeMissile(type) || type == M_SONDE);
         qAppliJeu->push(std::to_string(type));
 
         afficherTir2(sout, joueur, adversaire);
@@ -616,8 +617,18 @@ int Jeu::menuTir(std::ostream& sout, std::istream& sin,Joueur* joueur, Joueur* a
             result = this->qManetteJeu->front();
             this->qManetteJeu->pop();
             if (result.substr(0,3) == "pot"){
-                qAppliJeu->push(result.substr(3, 3));
                 valPot = std::stoi(result.substr(3,3));
+                int temp = (990 - valPot) / 10.22222;
+                qAppliJeu->push(std::to_string(temp));
+            }
+            else if (result.substr(0, 3) == "ran") {
+                int ran = std::stoi(result.substr(3, 1));
+                if (ran % 2 == 0) {
+                    ventX = (ran + 5) % 10 - 5;
+                }
+                else {
+                    ventY = (ran + 5) % 10 - 5;
+                }
             }
         } while (result != "bouton1");
         int elevation = (990 - valPot)/10.22222;// degre elevation
@@ -631,8 +642,9 @@ int Jeu::menuTir(std::ostream& sout, std::istream& sin,Joueur* joueur, Joueur* a
             result = this->qManetteJeu->front();
             this->qManetteJeu->pop();
             if (result.substr(0,3) == "pot"){
-                qAppliJeu->push(result.substr(3, 3));
+                
                 valPot = std::stoi(result.substr(3,3));
+                qAppliJeu->push(std::to_string((980 - valPot) / 2.4));
             }
         } while (result != "bouton1");
         qAppliJeu->push("confirmAngle");
@@ -647,8 +659,9 @@ int Jeu::menuTir(std::ostream& sout, std::istream& sin,Joueur* joueur, Joueur* a
             result = this->qManetteJeu->front();
             this->qManetteJeu->pop();
             if (result.substr(0,3) == "pot"){
-                qAppliJeu->push(result.substr(3, 3));
-                valPot = std::stoi(result.substr(3,3));
+                
+                valPot = std::stoi(result.substr(3,3)); 
+                qAppliJeu->push(std::to_string((990 - valPot) / (920 / (sqrtf(tailleEnX * tailleEnX / 4 + tailleEnY * tailleEnY / 4)))));
             }
         } while (result != "bouton1");
         qAppliJeu->push("confirmPuissance");

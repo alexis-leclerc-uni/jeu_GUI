@@ -190,6 +190,7 @@ void GameWindow::receiveStartGame(int numRows, int numCols, QString gameMode) {
 
 
 void GameWindow::receiveTailleBateau(int resultat) {
+    std::cout << "La taille est " << resultat << std::endl;
     tailleBateau = resultat;
 }
 
@@ -206,10 +207,13 @@ void GameWindow::receiveRotateBateau() {
 }
 void GameWindow::receiveJoueur1Fini() {
     //Recoit la confirmation que le joueur1 a fini de placer ses bateaux
+    currentPos[0] = 0; currentPos[1] = boardRows - 1;
+    rotationMode = true;
     removeBoats();
 }
 
 void GameWindow::receiveJoueur2Fini() {
+    currentPos[0] = 0; currentPos[1] = boardRows - 1;
     //Recoit la confirmation que le joueur1 a fini de placer ses bateaux
     changeGamemode(1);
 }
@@ -227,6 +231,7 @@ void GameWindow::receiveJoueur(std::string resultat) {
 void GameWindow::receiveCarte(std::string resultat) {
     std::string tableau = resultat;
     int index = 0;
+    std::cout << resultat << std::endl;
     for (int y = 0; y < boardRows; y++) {
         for (int x = 0; x < boardCols; x++) {
             int car = std::stoi(tableau.substr(index, 1));
@@ -237,8 +242,10 @@ void GameWindow::receiveCarte(std::string resultat) {
             if (car == 3)
                 car = 0;
             changeContent(x, y, car);
+
         }
     }
+    Sleep(2000);
 }
 
 void GameWindow::receiveElevation(int resultat) {
@@ -315,6 +322,7 @@ void GameWindow::changeContent(int x, int y, int state) {
 
 		button->setStyleSheet(QString("border-image: url(sprites/%1);").arg(image));
 		button->setText("");
+        button->update();
     }
 
     //QString background = border
@@ -328,7 +336,7 @@ void GameWindow::removeBoats() {
     {
         QPushButton* button = boatsFound[i];
         if (button) {
-            button->parentWidget()->layout()->removeWidget(button);
+            //button->parentWidget()->layout()->removeWidget(button);
             button->deleteLater();
         }
     }
@@ -407,21 +415,12 @@ void GameWindow::spawnBoat(int x, int y, bool orientation, int size) {
 
 	QRegularExpression exp(QString(".*%1.*").arg(boatType));
 	QList<QPushButton*> buttonsFound = findChildren<QPushButton*>(exp);
-    if (!buttonsFound.isEmpty()) {
         if (boatType == "Cruiser") {
             boatType = "Submarine";
 			QRegularExpression exp(QString(".*%1.*").arg(boatType));
 			QList<QPushButton*> buttonsFound = findChildren<QPushButton*>(exp);
-            if (!buttonsFound.isEmpty()) {
-				QMessageBox::warning(this, "Attention", QString("Le %1 a déjà été placé").arg(boatType));
-				return;
-            }
+            
         }
-        else {
-            QMessageBox::warning(this, "Attention", QString("Le %1 a déjà été placé").arg(boatType));
-            return;
-        }
-    }
 
 
 	QPushButton* clickedButton = findChild<QPushButton*>(QString("btn_%1_%2").arg(y).arg(x));

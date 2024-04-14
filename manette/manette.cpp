@@ -62,6 +62,12 @@ Manette::Manette(const std::string& port, concurrent_queue<std::string>* q){
                     }
                 }
             }
+            if (old_received_msg["random"] != nullptr)
+            {
+                try {
+                    q->push("ran" + std::to_string(parsed_received_msg["random"].get<int>()));
+                } catch (...) {}
+            }
             if (old_received_msg["pot"] != nullptr)
             {
                 try {
